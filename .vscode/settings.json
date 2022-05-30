@@ -1,0 +1,11 @@
+{
+    "pixelbyte.love2d.debug": true,
+    "Lua.diagnostics.globals": [
+        "love",
+        "class_commons"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-global"
+    ],
+    "Lua.workspace.checkThirdParty": false
+}
