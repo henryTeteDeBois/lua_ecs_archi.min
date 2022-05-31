@@ -1,10 +1,6 @@
 Entity = Class('Entity')
 
-function Entity:__construct()
-
-end
-
-function Entity:__set_component_active(value, ...)
+local __set_comp = function(self, value, ...)
     local comps_attribute_as_string = {...}
     for _, comp_name in ipairs(comps_attribute_as_string) do
         local comp = self[comp_name]
@@ -14,18 +10,24 @@ function Entity:__set_component_active(value, ...)
     end
 end
 
-function Entity:disable(...)
-    self.__set_component_active(false, ...)
+function Entity:__construct()
+
 end
 
-function Entity:enable(...)
-    self.__set_component_active(true, ...)
+function Entity:on(...)
+    __set_comp(self, true, ...)
+end
+
+function Entity:off(...)
+    __set_comp(self, false, ...)
 end
 
 function Entity:has_active(...)
     local comps_attribute_as_string = {...}
     for _, comp_name in ipairs(comps_attribute_as_string) do
         local comp = self[comp_name]
+        -- print(self, comp_name, comp, comp.active)
+
         if not comp or not comp.active then
             return false
         end
@@ -34,12 +36,27 @@ function Entity:has_active(...)
 end
 
 --===================================--
---
+-- FOO
 
 E_Foo = Class('E_Foo', Entity)
 
-function E_Foo:__construct()
+function E_Foo:__construct(x, y, w, h)
     Entity:__construct()
-    self.c_b = C_Body(self)
+    --==
+    self.c_b = C_Body(self, x, y, w, h)
 end
 
+--===================================--
+-- TILE
+
+E_Tile = Class('E_Tile', Entity)
+
+function E_Tile:__construct(ix, iy, type)
+    Entity:__construct()
+    --==
+    self.c_b = C_Body(self, ix*16, iy*16, 16, 16)
+    self.ix = ix
+    self.iy = iy
+    self.type = type
+
+end

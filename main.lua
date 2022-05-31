@@ -15,7 +15,7 @@ Gamera = require 'gamera'
 XType = require "xtype"
 
 --===================================--
--- game
+-- GAME
 require 'component'
 require 'component_body'
 require 'entity'
@@ -25,17 +25,16 @@ require 'system_physic'
 require 'map'
 require 'game'
 
-game = Game()
+GAME = Game()
 
 function love.load()
-    game:load()
+    GAME:load()
 end
 
 function love.update(dt)
-    game:update()
-
+    GAME:update()
 end
 
 function love.draw()
-    game:draw()
+    GAME:draw()
 end
