@@ -21,16 +21,21 @@ function Game:load()
 
     --== entities
     self.e_foo = E_Foo(50, 50, 16, 16)
-    self.tiny_world:addEntity(self.e_foo)
+    -- self.tiny_world:addEntity(self.e_foo)
     self.map:load()
     --== other
 end
 
 function Game:update(dt)
-    self.tiny_world:update(dt)
+    self.e_foo.c_b.x = self.e_foo.c_b.x-50*dt
+
+    S_Collision:update(dt)
+    S_Physic:update(dt)
+    self.tiny_world:update()
+
 end
 
 function Game:draw()
-    S_DrawBodyOutline:update()
     self.map:draw()
+    S_DrawBodyOutline:update()
 end

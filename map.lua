@@ -39,7 +39,7 @@ function Map:__construct()
         '#                                       #',
         '#                                       #',
         '#                                       #',
-        '#                                       #',
+        '#                             ####      #',
         '#                                       #',
         '#                                       #',
         '#                                       #',
@@ -77,8 +77,7 @@ function Map:draw()
 			if e_tile then
 				local quad = self.__tileset_quads[e_tile.type]
                 if e_tile.type ~= Tl.Type.Empty then
-                    -- print('oo')
-                    love.graphics.draw(self.__tileset_img, quad, x * 16, y * 16)
+                    love.graphics.draw(self.__tileset_img, quad, (x-1) * 16, (y-1) * 16)
                 end
 			end
 		end

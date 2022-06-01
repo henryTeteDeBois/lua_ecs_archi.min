@@ -1,5 +1,5 @@
--- https://github.com/ImagicTheCat/lua-xtype
--- MIT license (see LICENSE or src/xtype.lua)
+-- https://github.com/ImagicTheCat/lua-Xtype
+-- MIT license (see LICENSE or src/Xtype.lua)
 --[[
 MIT License
 
@@ -42,30 +42,30 @@ local function error_arg(index, expected)
   error("bad argument #"..index.." ("..expected.." expected)")
 end
 
--- xtype
+-- Xtype
 
-local xtype = {}
+local Xtype = {}
 
-local function xtype_tostring(t)
+local function Xtype_tostring(t)
   local mt = getmetatable(t)
   mt.__tostring = nil
-  local str = string.gsub(tostring(t), "table:", "xtype<"..t.xtype_name..">:", 1)
-  mt.__tostring = xtype_tostring
+  local str = string.gsub(tostring(t), "table:", "Xtype<"..t.Xtype_name..">:", 1)
+  mt.__tostring = Xtype_tostring
   return str
 end
 
 local type_mt = {
-  xtype = "xtype",
-  __tostring = xtype_tostring
+  Xtype = "Xtype",
+  __tostring = Xtype_tostring
 }
 
-local xtype_is
+local Xtype_is
 -- Check if a value is a valid type.
-local function xtype_check(t) return type(t) == "string" or xtype_is(t, "xtype") end
-xtype.check = xtype_check
+local function Xtype_check(t) return type(t) == "string" or Xtype_is(t, "Xtype") end
+Xtype.check = Xtype_check
 -- Check if an argument is a type.
 local function check_type(v, index)
-  if not xtype_check(v) then error_arg(index, "type") end
+  if not Xtype_check(v) then error_arg(index, "type") end
 end
 
 local ctype_types = {} -- map of ctype id => type
@@ -79,7 +79,7 @@ local ctype_types = {} -- map of ctype id => type
 -- ctype: cdata ctype object
 -- t: (optional) type
 -- return bound type
-function xtype.ctype(ctype, t)
+function Xtype.ctype(ctype, t)
   local id = tonumber(ctype)
   if t and not ctype_types[id] then
     check_type(t, 2)
@@ -88,58 +88,58 @@ function xtype.ctype(ctype, t)
   return ctype_types[id]
 end
 
-local function cdata_get(v) return v.__xtype end
+local function cdata_get(v) return v.__Xtype end
 
 -- Get terminal type of a value.
-local function xtype_get(v)
+local function Xtype_get(v)
   local v_type = type(v)
   if v_type == "table" or v_type == "userdata" then
     local mt = getmetatable(v)
-    return mt and mt.xtype or v_type
+    return mt and mt.Xtype or v_type
   elseif v_type == "cdata" then
     local xt = ctype_types[tonumber(ffi.typeof(v))]
     if not xt then -- try to acquire type from field
       local ok; ok, xt = pcall(cdata_get, v)
-      if ok then xtype.ctype(ffi.typeof(v), xt) end
+      if ok then Xtype.ctype(ffi.typeof(v), xt) end
     end
     return xt or v_type
   else return v_type end
 end
-xtype.get = xtype_get
+Xtype.get = Xtype_get
 
 -- Check if a value is of type t.
-xtype_is = function(v, t)
+Xtype_is = function(v, t)
   check_type(t, 2)
-  local vt = xtype_get(v)
-  if type(vt) == "table" then return vt.xtype_set[t] ~= nil
+  local vt = Xtype_get(v)
+  if type(vt) == "table" then return vt.Xtype_set[t] ~= nil
   else return vt == t end
 end
-xtype.is = xtype_is
+Xtype.is = Xtype_is
 
 -- Create a type.
 --
--- The created type is a table with 3 fields: xtype_name, xtype_stack and xtype_set.
--- The table can be modified as long as the xtype fields are left untouched.
+-- The created type is a table with 3 fields: Xtype_name, Xtype_stack and Xtype_set.
+-- The table can be modified as long as the Xtype fields are left untouched.
 -- A default metatable is set; it can be replaced at the condition that the
--- type would still be recognized as a "xtype".
+-- type would still be recognized as a "Xtype".
 --
 -- name: human-readable string (doesn't have to be unique)
 -- ...: base types, ordered by descending proximity, to the least specific type
 -- return created type
-function xtype.create(name, ...)
+function Xtype.create(name, ...)
   if type(name) ~= "string" then error_arg(1, "string") end
   -- check base types
   local bases = table_pack(...)
   for i=1, bases.n do check_type(bases[i], i+1) end
   -- create
   local t = setmetatable({
-    xtype_name = name,
-    xtype_stack = {},
-    xtype_set = {}
+    Xtype_name = name,
+    Xtype_stack = {},
+    Xtype_set = {}
   }, type_mt)
   -- append self
-  table.insert(t.xtype_stack, t)
-  t.xtype_set[t] = true
+  table.insert(t.Xtype_stack, t)
+  t.Xtype_set[t] = true
   -- Inherits from base types (some kind of cascade breadth first search).
   -- Each base type is evaluated left to right, with one type inheritance per step.
   local step = 1
@@ -150,18 +150,18 @@ function xtype.create(name, ...)
       if type(base) == "string" then -- primitive type
         if step == 1 then
           browsing = true
-          if not t.xtype_set[base] then
-            t.xtype_set[base] = true
-            table.insert(t.xtype_stack, base)
+          if not t.Xtype_set[base] then
+            t.Xtype_set[base] = true
+            table.insert(t.Xtype_stack, base)
           end
         end
       else -- non-primitive type
-        local st = base.xtype_stack[step]
+        local st = base.Xtype_stack[step]
         if st then
           browsing = true
-          if not t.xtype_set[st] then
-            t.xtype_set[st] = true
-            table.insert(t.xtype_stack, st)
+          if not t.Xtype_set[st] then
+            t.Xtype_set[st] = true
+            table.insert(t.Xtype_stack, st)
           end
         end
       end
@@ -172,16 +172,16 @@ function xtype.create(name, ...)
 end
 
 -- Check if a type is of type ot.
-function xtype.of(t, ot)
+function Xtype.of(t, ot)
   check_type(t, 1); check_type(ot, 2)
-  if type(t) == "table" then return t.xtype_set[ot] ~= nil
+  if type(t) == "table" then return t.Xtype_set[ot] ~= nil
   else return t == ot end
 end
 
 -- Get the name of a type.
 -- return string or nothing if not a type
-function xtype.name(t)
-  if xtype_check(t) then return type(t) == "string" and t or t.xtype_name end
+function Xtype.name(t)
+  if Xtype_check(t) then return type(t) == "string" and t or t.Xtype_name end
 end
 
 -- Multifunction.
@@ -203,32 +203,32 @@ local function check_sign(...)
   for i=1, sign.n do check_type(sign[i], i) end
   return sign
 end
-xtype.checkSign = check_sign
+Xtype.checkSign = check_sign
 
 -- Return formatted signature string.
 local function format_sign(sign)
   local names = {}
   for _, t in ipairs(sign) do
-    table.insert(names, type(t) == "string" and t or t.xtype_name)
+    table.insert(names, type(t) == "string" and t or t.Xtype_name)
   end
   return "("..table.concat(names, ", ")..")"
 end
-xtype.formatSign = format_sign
+Xtype.formatSign = format_sign
 
 -- Stack distance to another type from a terminal type.
 -- ot: support "any" keyword
 -- return distance or nil/nothing if not of type ot
 local function type_dist(t, ot)
   if ot == "any" then -- special keyword
-    return type(t) == "string" and 1 or #t.xtype_stack
+    return type(t) == "string" and 1 or #t.Xtype_stack
   else
     if type(t) == "string" then return t == ot and 0 or nil end
-    for i, st in ipairs(t.xtype_stack) do
+    for i, st in ipairs(t.Xtype_stack) do
       if st == ot then return i-1 end
     end
   end
 end
-xtype.typeDist = type_dist
+Xtype.typeDist = type_dist
 
 -- Distance to another signature from a call signature.
 -- osign: support "any" keyword
@@ -242,7 +242,7 @@ local function sign_dist(sign, osign)
   end
   return dist
 end
-xtype.signDist = sign_dist
+Xtype.signDist = sign_dist
 
 -- Create hash sign tree.
 local function new_hsign()
@@ -318,7 +318,7 @@ end
 -- Unoptimized multifunction call.
 local function mf_call(self, ...)
   local sign = table_pack(...)
-  for i=1, sign.n do sign[i] = xtype_get(sign[i]) end
+  for i=1, sign.n do sign[i] = Xtype_get(sign[i]) end
   local f = mf_resolve_sign(self, sign)
   if not f then error("unresolved call signature "..format_sign(sign)) end
   return f(...)
@@ -334,7 +334,7 @@ local function gen_opt_mfcall(n)
   -- generate code
   local main = [=[
 local select = select
-local xtype_get, mf_call = ...
+local Xtype_get, mf_call = ...
 return function(self, ...)
   -- optimized path
   local n = select("#", ...)
@@ -353,13 +353,13 @@ end
   local hcode = "if n == 0 then hash = self.hsign[1]\n"
   for i=1,n do
     hcode = hcode.."elseif n == "..i.." then\n"
-    hcode = hcode.."local "..xtype.tpllist("a$", 1, i, ", ").." = ...\n"
-    hcode = hcode.."hash = self.hsign"..xtype.tpllist("[xtype_get(a$)]", 1, i, "").."[1]\n"
+    hcode = hcode.."local "..Xtype.tpllist("a$", 1, i, ", ").." = ...\n"
+    hcode = hcode.."hash = self.hsign"..Xtype.tpllist("[Xtype_get(a$)]", 1, i, "").."[1]\n"
   end
   hcode = hcode.."end\n"
-  local code = xtype.tplsub(main, {hash_code = hcode})
+  local code = Xtype.tplsub(main, {hash_code = hcode})
   -- compile
-  mfcall = loadstring(code, "=[xtype-opt-mfcall #"..n.."]")(xtype_get, mf_call)
+  mfcall = loadstring(code, "=[Xtype-opt-mfcall #"..n.."]")(Xtype_get, mf_call)
   -- cache
   mfcalls[n] = mfcall
   return mfcall
@@ -433,12 +433,12 @@ function multifunction:addGenerator(f)
 end
 
 -- Create a multifunction.
-function xtype.multifunction()
+function Xtype.multifunction()
   -- The metatable is per multifunction to independently update the call
   -- function.
   local default_call = gen_opt_mfcall(0)
   local multifunction_mt = {
-    xtype = "multifunction",
+    Xtype = "multifunction",
     __tostring = multifunction_tostring,
     __index = multifunction,
     __call = default_call
@@ -460,7 +460,7 @@ end
 -- i: start index
 -- j: end index
 -- separator: (optional) default: ", "
-function xtype.tpllist(tpl, i, j, separator)
+function Xtype.tpllist(tpl, i, j, separator)
   local list = {}
   for k=i,j do table.insert(list, (string.gsub(tpl, "%$", k))) end
   return table.concat(list, separator or ", ")
@@ -470,7 +470,7 @@ end
 -- tpl: string with $... parameters
 -- args: map of param => value
 -- return processed template
-function xtype.tplsub(tpl, args)
+function Xtype.tplsub(tpl, args)
   return string.gsub(tpl, "%$([%w_]+)", args)
 end
 
@@ -480,26 +480,26 @@ end
 --
 -- map of Lua binary op name => multifunction
 -- (add, sub, mul, div, mod, pow, concat, eq, lt, le, idiv, band, bor, bxor, shl, shr)
-xtype.op = {
-  add = xtype.multifunction(),
-  sub = xtype.multifunction(),
-  mul = xtype.multifunction(),
-  div = xtype.multifunction(),
-  mod = xtype.multifunction(),
-  pow = xtype.multifunction(),
-  concat = xtype.multifunction(),
-  eq = xtype.multifunction(),
-  lt = xtype.multifunction(),
-  le = xtype.multifunction(),
-  idiv = xtype.multifunction(),
-  band = xtype.multifunction(),
-  bor = xtype.multifunction(),
-  bxor = xtype.multifunction(),
-  shl = xtype.multifunction(),
-  shr = xtype.multifunction()
+Xtype.op = {
+  add = Xtype.multifunction(),
+  sub = Xtype.multifunction(),
+  mul = Xtype.multifunction(),
+  div = Xtype.multifunction(),
+  mod = Xtype.multifunction(),
+  pow = Xtype.multifunction(),
+  concat = Xtype.multifunction(),
+  eq = Xtype.multifunction(),
+  lt = Xtype.multifunction(),
+  le = Xtype.multifunction(),
+  idiv = Xtype.multifunction(),
+  band = Xtype.multifunction(),
+  bor = Xtype.multifunction(),
+  bxor = Xtype.multifunction(),
+  shl = Xtype.multifunction(),
+  shr = Xtype.multifunction()
 }
 
 -- Default eq behavior.
-xtype.op.eq:define(function() return false end, "any", "any")
+Xtype.op.eq:define(function() return false end, "any", "any")
 
-return xtype
+return Xtype

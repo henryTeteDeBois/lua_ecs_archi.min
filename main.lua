@@ -12,7 +12,7 @@ Timer = require 'hump.timer';
 Signal = require 'hump.signal';
 Class = (require 'luaoop').class
 Gamera = require 'gamera'
-XType = require "xtype"
+Xtype = require "Xtype"
 
 --===================================--
 -- GAME
@@ -32,7 +32,7 @@ function love.load()
 end
 
 function love.update(dt)
-    GAME:update()
+    GAME:update(dt)
 end
 
 function love.draw()

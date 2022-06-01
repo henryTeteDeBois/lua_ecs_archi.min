@@ -2,7 +2,7 @@
 -- MIT license (see LICENSE or src/Luaoop.lua)
 --[[
 MIT License
-local xtype = require("xtype")
+local Xtype = require("Xtype")
 
 Copyright (c) 2017 ImagicTheCat
 
@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ]]
 
-local xtype = require("xtype")
+local Xtype = require("Xtype")
 
 local lua51 = string.find(_VERSION, "5.1")
 local getmetatable, setmetatable, newproxy = getmetatable, setmetatable, newproxy
@@ -37,18 +37,18 @@ end
 local Luaoop = {}
 
 -- class type
-local class_mt = {xtype = "xtype"}
-local class = setmetatable(xtype.create("class", "xtype"), class_mt)
+local class_mt = {Xtype = "Xtype"}
+local class = setmetatable(Xtype.create("class", "Xtype"), class_mt)
 
 local function check_class(v, index)
-  if not xtype.is(v, class) then error_arg(index, "class") end
+  if not Xtype.is(v, class) then error_arg(index, "class") end
 end
 
 local function instance_tostring(self)
-  local xt = xtype.get(self)
+  local xt = Xtype.get(self)
   local mt = getmetatable(self)
   mt.__tostring = nil
-  local str = string.gsub(tostring(self), "table:", "instance<"..xtype.name(xt)..">:", 1)
+  local str = string.gsub(tostring(self), "table:", "instance<"..Xtype.name(xt)..">:", 1)
   mt.__tostring = instance_tostring
   return str
 end
@@ -56,12 +56,12 @@ end
 -- Build the class inheritance (not the instance inheritance).
 local function class_build_inheritance(classdef)
   local build = {}
-  for i=#classdef.xtype_stack,1,-1 do -- least specific, descending order
-    local base = classdef.xtype_stack[i]
-    if xtype.is(base, class) then
+  for i=#classdef.Xtype_stack,1,-1 do -- least specific, descending order
+    local base = classdef.Xtype_stack[i]
+    if Xtype.is(base, class) then
       -- inherit base class fields
       for k,v in pairs(base) do
-        if k ~= "luaoop" and not k:find("^xtype_") then build[k] = v end
+        if k ~= "luaoop" and not k:find("^Xtype_") then build[k] = v end
       end
     end
   end
@@ -87,7 +87,7 @@ local function class_build(classdef)
     if not k:find("^__") then instance_build[k] = v end
   end
   for k,v in pairs(classdef) do -- inherit class, everything but special fields
-    if k ~= "luaoop" and not k:find("^xtype_") and not k:find("^__") then
+    if k ~= "luaoop" and not k:find("^Xtype_") and not k:find("^__") then
       instance_build[k] = v
     end
   end
@@ -96,24 +96,24 @@ local function class_build(classdef)
   --- init instance metatable
   if not luaoop.meta then
     luaoop.meta = {
-      xtype = classdef,
+      Xtype = classdef,
       -- binary operators
-      __add = xtype.op.add,
-      __sub = xtype.op.sub,
-      __mul = xtype.op.mul,
-      __div = xtype.op.div,
-      __mod = xtype.op.mod,
-      __pow = xtype.op.pow,
-      __concat = xtype.op.concat,
-      __eq = xtype.op.eq,
-      __lt = xtype.op.lt,
-      __le = xtype.op.le,
-      __idiv = xtype.op.idiv,
-      __band = xtype.op.band,
-      __bor = xtype.op.bor,
-      __bxor = xtype.op.bxor,
-      __shl = xtype.op.shl,
-      __shr = xtype.op.shr
+      __add = Xtype.op.add,
+      __sub = Xtype.op.sub,
+      __mul = Xtype.op.mul,
+      __div = Xtype.op.div,
+      __mod = Xtype.op.mod,
+      __pow = Xtype.op.pow,
+      __concat = Xtype.op.concat,
+      __eq = Xtype.op.eq,
+      __lt = Xtype.op.lt,
+      __le = Xtype.op.le,
+      __idiv = Xtype.op.idiv,
+      __band = Xtype.op.band,
+      __bor = Xtype.op.bor,
+      __bxor = Xtype.op.bxor,
+      __shl = Xtype.op.shl,
+      __shr = Xtype.op.shr
     }
   end
   --- update instance metatable
@@ -167,17 +167,17 @@ local function class_instantiate(classdef, ...)
 end
 
 -- Create a new class.
--- Base types can be classes or other xtypes.
+-- Base types can be classes or other Xtypes.
 --
 -- name: human-readable string (doesn't have to be unique)
 -- ...: base types, ordered by descending proximity, to the least specific type
--- return created class (an xtype)
+-- return created class (an Xtype)
 local function class_new(name, ...)
-  local xt = xtype.create(name, ...)
+  local xt = Xtype.create(name, ...)
   -- default print "class<type>: 0x..."
-  local tostring_const = string.gsub(tostring(xt), "xtype", "class", 1)
+  local tostring_const = string.gsub(tostring(xt), "Xtype", "class", 1)
   return setmetatable(xt, {
-    xtype = class,
+    Xtype = class,
     __index = class_build_inheritance(xt),
     __call = class_instantiate,
     __tostring = function() return tostring_const end

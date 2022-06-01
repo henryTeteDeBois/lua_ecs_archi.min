@@ -10,8 +10,8 @@ local __set_comp = function(self, value, ...)
     end
 end
 
-function Entity:__construct()
-
+function Entity:__construct(e)
+    GAME.tiny_world:addEntity(e)
 end
 
 function Entity:on(...)
@@ -41,7 +41,7 @@ end
 E_Foo = Class('E_Foo', Entity)
 
 function E_Foo:__construct(x, y, w, h)
-    Entity:__construct()
+    Entity:__construct(self)
     --==
     self.c_b = C_Body(self, x, y, w, h)
 end
@@ -52,11 +52,13 @@ end
 E_Tile = Class('E_Tile', Entity)
 
 function E_Tile:__construct(ix, iy, type)
-    Entity:__construct()
+    Entity:__construct(self)
     --==
-    self.c_b = C_Body(self, ix*16, iy*16, 16, 16)
+    self.c_b = C_Body(self, (ix-1)*16, (iy-1)*16, 16, 16)
     self.ix = ix
     self.iy = iy
     self.type = type
-
+    if type == Tl.Type.Empty then
+        self.c_b.draw_outline = false
+    end
 end
