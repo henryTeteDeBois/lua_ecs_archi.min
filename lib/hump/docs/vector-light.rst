@@ -3,7 +3,7 @@ hump.vector-light
 
 ::
 
-    vector = require "hump.vector-light"
+    vector=require "hump.vector-light"
 
 An table-free version of :doc:`hump.vector <vector>`. Instead of a vector type,
 ``hump.vector-light`` provides functions that operate on numbers.
@@ -19,29 +19,29 @@ An table-free version of :doc:`hump.vector <vector>`. Instead of a vector type,
 **Example**::
 
     function player:update(dt)
-        local dx,dy = 0,0
+        local dx,dy=0,0
         if love.keyboard.isDown('left') then
-            dx = -1
+            dx=-1
         elseif love.keyboard.isDown('right') then
-            dx =  1
+            dx= 1
         end
         if love.keyboard.isDown('up') then
-            dy = -1
+            dy=-1
         elseif love.keyboard.isDown('down') then
-            dy =  1
+            dy= 1
         end
-        dx,dy = vector.normalize(dx, dy)
+        dx,dy=vector.normalize(dx, dy)
 
-        player.velx, player.vely = vector.add(player.velx, player.vely,
+        player.velx, player.vely=vector.add(player.velx, player.vely,
                                         vector.mul(dy, dx, dy))
 
         if vector.len(player.velx, player.vely) > player.max_velocity then
-            player.velx, player.vely = vector.mul(player.max_velocity,
+            player.velx, player.vely=vector.mul(player.max_velocity,
                                 vector.normalize(player.velx, player.vely)
         end
 
-        player.x = player.x + dt * player.velx
-        player.y = player.y + dt * player.vely
+        player.x=player.x + dt * player.velx
+        player.y=player.y + dt * player.vely
     end
 
 List of Functions
@@ -95,7 +95,7 @@ Useful for debugging.
 .. function:: vector.fromPolar(angle, radius)
 
    :param number angle: Angle of the vector in radians.
-   :param number radius: Length of the vector (optional, default = 1).
+   :param number radius: Length of the vector (optional, default=1).
    :returns: ``x``, ``y``: The vector in cartesian coordinates.
 
 
@@ -104,7 +104,7 @@ The ``angle`` is measured against the vector (1,0), i.e., the x axis.
 
 **Examples**::
 
-    x,y = vector.polar(math.pi,10)
+    x,y=vector.polar(math.pi,10)
 
 
 .. function:: vector.toPolar(x, y)
@@ -117,24 +117,24 @@ Convert the vector to polar coordinates, i.e., the angle and the radius/lenth.
 **Example**::
 
    -- complex multiplication
-   phase1, abs1 = vector.toPolar(re1, im1)
-   phase2, abs2 = vector.toPolar(re2, im2)
+   phase1, abs1=vector.toPolar(re1, im1)
+   phase2, abs2=vector.toPolar(re2, im2)
 
    vector.fromPolar(phase1+phase2, abs1*abs2)
 
 .. function:: vector.randomDirection(len_min, len_max)
 
-   :param number len_min: Minimum length of the vector (optional, default = 1).
-   :param number len_max: Maximum length of the vector (optional, default = ``len_min``).
+   :param number len_min: Minimum length of the vector (optional, default=1).
+   :param number len_max: Maximum length of the vector (optional, default=``len_min``).
    :returns: ``x``, ``y``: A vector pointing in a random direction with a random length between ``len_min`` and ``len_max``.
 
 Sample a vector with random direction and (optional) length.
 
 **Examples**::
    
-   x,y = vector.randomDirection()    -- length is 1
-   x,y = vector.randomDirection(1,5) -- length is a random value between 1 and 5
-   x,y = vector.randomDirection(100) -- length is 100
+   x,y=vector.randomDirection()    -- length is 1
+   x,y=vector.randomDirection(1,5) -- length is a random value between 1 and 5
+   x,y=vector.randomDirection(100) -- length is 100
 
 
 .. function:: vector.mul(s, x,y)
@@ -149,7 +149,7 @@ chain operations (see example).
 
 **Example**::
 
-    velx,vely = vec.mul(dt, vec.add(velx,vely, accx,accy))
+    velx,vely=vec.mul(dt, vec.add(velx,vely, accx,accy))
 
 
 .. function:: vector.div(s, x,y)
@@ -164,8 +164,8 @@ chain operations (see example).
 
 **Example**::
 
-    x,y = vec.div(self.zoom, vec.sub(x,y, w/2,h/2))
-    x,y = vec.div(self.zoom, x-w/2, y-h/2)
+    x,y=vec.div(self.zoom, vec.sub(x,y, w/2,h/2))
+    x,y=vec.div(self.zoom, x-w/2, y-h/2)
 
 
 .. function:: vector.idiv(s, x,y)
@@ -180,8 +180,8 @@ arguments is chosen so that it's possible to chain operations (see example).
 
 **Example**::
 
-    i,k = vec.idiv(grid.cellsize, x,y)
-    i,k = vec.idiv(grid.cellsize, love.mouse.getPosition())
+    i,k=vec.idiv(grid.cellsize, x,y)
+    i,k=vec.idiv(grid.cellsize, love.mouse.getPosition())
 
 
 .. function:: vector.add(x1,y1, x2,y2)
@@ -196,7 +196,7 @@ conjunction with other functions like :func:`vector.mul`.
 
 **Example**::
 
-    player.x,player.y = vector.add(player.x,player.y, vector.mul(dt, dx,dy))
+    player.x,player.y=vector.add(player.x,player.y, vector.mul(dt, dx,dy))
 
 
 .. function:: vector.sub(x1,y1, x2,y2)
@@ -211,7 +211,7 @@ conjunction with other functions like :func:`vector.mul`.
 
 **Example**::
 
-    dx,dy = vector.sub(400,300, love.mouse.getPosition())
+    dx,dy=vector.sub(400,300, love.mouse.getPosition())
 
 
 .. function:: vector.permul(x1,y1, x2,y2)
@@ -225,7 +225,7 @@ Component-wise multiplication, i.e.: ``x1*x2, y1*y2``.
 
 **Example**::
 
-    x,y = vector.permul(x,y, 1,1.5)
+    x,y=vector.permul(x,y, 1,1.5)
 
 
 .. function:: vector.dot(x1,y1, x2,y2)
@@ -240,7 +240,7 @@ vectors: ``x1*x2 + y1*y2``.
 
 **Example**::
 
-    cosphi = vector.dot(rx,ry, vx,vy)
+    cosphi=vector.dot(rx,ry, vx,vy)
 
 
 .. function:: vector.cross(x1,y1, x2,y2)
@@ -255,7 +255,7 @@ two vectors: ``x1*y2 - y1*x2``.
 
 **Example**::
 
-    parallelogram_area = vector.cross(ax,ay, bx,by)
+    parallelogram_area=vector.cross(ax,ay, bx,by)
 
 
 .. function:: vector.vector.det(x1,y1, x2,y2)
@@ -269,7 +269,7 @@ Alias to :func:`vector.cross`.
 
 **Example**::
 
-    parallelogram_area = vector.det(ax,ay, bx,by)
+    parallelogram_area=vector.det(ax,ay, bx,by)
 
 
 .. function:: vector.eq(x1,y1, x2,y2)
@@ -321,7 +321,7 @@ Get length of a vector, i.e. ``math.sqrt(x*x + y*y)``.
 
 **Example**::
 
-    distance = vector.len(love.mouse.getPosition())
+    distance=vector.len(love.mouse.getPosition())
 
 
 .. function:: vector.len2(x,y)
@@ -334,11 +334,11 @@ Get squared length of a vector, i.e. ``x*x + y*y``.
 **Example**::
 
     -- get closest vertex to a given vector
-    closest, dsq = vertices[1], vector.len2(px-vertices[1].x, py-vertices[1].y)
-    for i = 2,#vertices do
-        local temp = vector.len2(px-vertices[i].x, py-vertices[i].y)
+    closest, dsq=vertices[1], vector.len2(px-vertices[1].x, py-vertices[1].y)
+    for i=2,#vertices do
+        local temp=vector.len2(px-vertices[i].x, py-vertices[i].y)
         if temp < dsq then
-            closest, dsq = vertices[i], temp
+            closest, dsq=vertices[i], temp
         end
     end
 
@@ -356,11 +356,11 @@ Get distance of two points. The same as ``vector.len(x1-x2, y1-y2)``.
 
     -- get closest vertex to a given vector
     -- slightly slower than the example using len2()
-    closest, dist = vertices[1], vector.dist(px,py, vertices[1].x,vertices[1].y)
-    for i = 2,#vertices do
-        local temp = vector.dist(px,py, vertices[i].x,vertices[i].y)
+    closest, dist=vertices[1], vector.dist(px,py, vertices[1].x,vertices[1].y)
+    for i=2,#vertices do
+        local temp=vector.dist(px,py, vertices[i].x,vertices[i].y)
         if temp < dist then
-            closest, dist = vertices[i], temp
+            closest, dist=vertices[i], temp
         end
     end
 
@@ -376,11 +376,11 @@ Get squared distance of two points. The same as ``vector.len2(x1-x2, y1-y2)``.
 **Example**::
 
     -- get closest vertex to a given vector
-    closest, dsq = vertices[1], vector.dist2(px,py, vertices[1].x,vertices[1].y)
-    for i = 2,#vertices do
-        local temp = vector.dist2(px,py, vertices[i].x,vertices[i].y)
+    closest, dsq=vertices[1], vector.dist2(px,py, vertices[1].x,vertices[1].y)
+    for i=2,#vertices do
+        local temp=vector.dist2(px,py, vertices[i].x,vertices[i].y)
         if temp < dsq then
-            closest, dsq = vertices[i], temp
+            closest, dsq=vertices[i], temp
         end
     end
 
@@ -396,7 +396,7 @@ vector, but with length 1.
 
 **Example**::
 
-    dx,dy = vector.normalize(vx,vy)
+    dx,dy=vector.normalize(vx,vy)
 
 
 .. function:: vector.rotate(phi, x,y)
@@ -411,10 +411,10 @@ Get a rotated vector.
 **Example**::
 
     -- approximate a circle
-    circle = {}
-    for i = 1,30 do
-        local phi = 2 * math.pi * i / 30
-        circle[i*2-1], circle[i*2] = vector.rotate(phi, 0,1)
+    circle={}
+    for i=1,30 do
+        local phi=2 * math.pi * i / 30
+        circle[i*2-1], circle[i*2]=vector.rotate(phi, 0,1)
     end
 
 
@@ -428,7 +428,7 @@ Quick rotation by 90°. The same (but faster) as ``vector.rotate(math.pi/2, x,y)
 
 **Example**::
 
-    nx,ny = vector.normalize(vector.perpendicular(bx-ax, by-ay))
+    nx,ny=vector.normalize(vector.perpendicular(bx-ax, by-ay))
 
 
 .. function:: vector.project(x,y, u,v)
@@ -442,7 +442,7 @@ Project vector onto another vector.
 
 **Example**::
 
-    vx_p,vy_p = vector.project(vx,vy, ax,ay)
+    vx_p,vy_p=vector.project(vx,vy, ax,ay)
 
 
 .. function:: vector.mirror(x,y, u,v)
@@ -456,7 +456,7 @@ Mirrors vector on the axis defined by the other vector.
 
 **Example**::
 
-    vx,vy = vector.mirror(vx,vy, surface.x,surface.y)
+    vx,vy=vector.mirror(vx,vy, surface.x,surface.y)
 
 
 .. function:: vector.angleTo(ox,y, u,v)
@@ -471,7 +471,7 @@ i.e. the function returns the angle to the coordinate system.
 
 **Example**::
 
-    lean = vector.angleTo(self.upx, self.upy, 0,1)
+    lean=vector.angleTo(self.upx, self.upy, 0,1)
     if lean > .1 then self:fallOver() end
 
 
@@ -487,6 +487,6 @@ direction as the source vector, but has a magnitude smaller or equal to
 
 **Example**::
 
-    vel_x, vel_y = vector.trim(299792458,
+    vel_x, vel_y=vector.trim(299792458,
                                vector.add(vel_x, vel_y,
                                           vector.mul(mass * dt, force_x, force_y)))

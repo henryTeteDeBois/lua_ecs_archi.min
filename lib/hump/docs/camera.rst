@@ -3,7 +3,7 @@ hump.camera
 
 ::
 
-    Camera = require "hump.camera"
+    Camera=require "hump.camera"
 
 A camera utility for LÖVE. A camera can "look" at a position. It can zoom in
 and out and it can rotate it's view. In the background, this is done by
@@ -13,11 +13,11 @@ worry about that.
 **Example**::
 
     function love.load()
-        camera = Camera(player.pos.x, player.pos.y)
+        camera=Camera(player.pos.x, player.pos.y)
     end
     
     function love.update(dt)
-        local dx,dy = player.x - camera.x, player.y - camera.y
+        local dx,dy=player.x - camera.x, player.y - camera.y
         camera:move(dx/2, dy/2)
     end
     
@@ -70,9 +70,9 @@ The module variable name can be used at a shortcut to ``new()``.
 
 **Example**::
 
-    camera = require 'hump.camera'
+    camera=require 'hump.camera'
     -- camera looking at (100,100) with zoom 2 and rotated by 45 degrees
-    cam = camera(100,100, 2, math.pi/2)
+    cam=camera(100,100, 2, math.pi/2)
 
 
 .. function:: camera:move(dx,dy)
@@ -84,7 +84,7 @@ The module variable name can be used at a shortcut to ``new()``.
 Move the camera *by* some vector. To set the position, use
 :func:`camera:lookAt`.
 
-This function is shortcut to ``camera.x,camera.y = camera.x+dx, camera.y+dy``.
+This function is shortcut to ``camera.x,camera.y=camera.x+dx, camera.y+dy``.
 
 **Examples**::
 
@@ -108,7 +108,7 @@ This function is shortcut to ``camera.x,camera.y = camera.x+dx, camera.y+dy``.
 Let the camera look at a point. In other words, it sets the camera position. To
 move the camera *by* some amount, use :func:`camera:move`.
 
-This function is shortcut to ``camera.x,camera.y = x, y``.
+This function is shortcut to ``camera.x,camera.y=x, y``.
 
 **Examples**::
 
@@ -132,11 +132,11 @@ Returns ``camera.x, camera.y``.
 **Example**::
 
     -- let the camera fly!
-    local cam_dx, cam_dy = 0, 0
+    local cam_dx, cam_dy=0, 0
     
     function love.mousereleased(x,y)
-        local cx,cy = camera:position()
-        dx, dy = x-cx, y-cy
+        local cx,cy=camera:position()
+        dx, dy=x-cx, y-cy
     end
     
     function love.update(dt)
@@ -152,7 +152,7 @@ Returns ``camera.x, camera.y``.
 
 Rotate the camera by some angle. To set the angle use :func:`camera:rotateTo`.
 
-This function is shortcut to ``camera.rot = camera.rot + angle``.
+This function is shortcut to ``camera.rot=camera.rot + angle``.
 
 **Examples**::
 
@@ -172,7 +172,7 @@ This function is shortcut to ``camera.rot = camera.rot + angle``.
    :param number angle: Rotation angle in radians
    :returns: The camera.
 
-Set rotation: ``camera.rot = angle``.
+Set rotation: ``camera.rot=angle``.
 
 **Example**::
 
@@ -185,7 +185,7 @@ Set rotation: ``camera.rot = angle``.
    :returns: The camera.
 
 
-*Multiply* zoom: ``camera.scale = camera.scale * mul``.
+*Multiply* zoom: ``camera.scale=camera.scale * mul``.
 
 **Examples**::
 
@@ -206,7 +206,7 @@ Set rotation: ``camera.rot = angle``.
    :returns: The camera.
 
 
-Set zoom: ``camera.scale = zoom``.
+Set zoom: ``camera.scale=zoom``.
 
 **Example**::
 
@@ -285,7 +285,7 @@ between these two coordinate systems.
 
 **Example**::
 
-    x,y = camera:worldCoords(love.mouse.getPosition())
+    x,y=camera:worldCoords(love.mouse.getPosition())
     selectedUnit:plotPath(x,y)
 
 
@@ -309,7 +309,7 @@ between these two coordinate systems.
 
 **Example**::
 
-    x,y = camera:cameraCoords(player.pos.x, player.pos.y)
+    x,y=camera:cameraCoords(player.pos.x, player.pos.y)
     love.graphics.line(x, y, love.mouse.getPosition())
 
 
@@ -322,7 +322,7 @@ Shortcut to ``camera:worldCoords(love.mouse.getPosition())``.
 
 **Example**::
 
-    x,y = camera:mousePosition()
+    x,y=camera:mousePosition()
     selectedUnit:plotPath(x,y)
 
 
@@ -352,7 +352,7 @@ All movements are subject to smoothing (see :ref:`Movement Smoothers
 You can specify a default movement smoother by assigning the variable
 :attr:`camera.smoother`::
 
-    cam.smoother = Camera.smooth.linear(100)
+    cam.smoother=Camera.smooth.linear(100)
 
 
 
@@ -461,7 +461,7 @@ camera if the position would be out of the screen-rectangle defined by ``x_min``
    lock to is defined in world coordinates!
 
 All of the other locking methods can be implemented by window locking. For
-position locking, set ``x_min = x_max`` and ``y_min = y_max``.
+position locking, set ``x_min=x_max`` and ``y_min=y_max``.
 Off-center locking can be done by defining the locking window accordingly.
 
 **Examples**::
@@ -513,7 +513,7 @@ where ``dx,dy`` is the offset the camera would move before smoothing and
 This is a simple "rubber-band" smoother::
 
     function rubber_band(dx,dy)
-        local dt = love.timer.getDelta()
+        local dt=love.timer.getDelta()
         return dx*dt, dy*dt
     end
 
@@ -527,7 +527,7 @@ Dummy smoother: does not smooth the motion.
 
 **Example**::
 
-    cam.smoother = Camera.smooth.none()
+    cam.smoother=Camera.smooth.none()
 
 
 .. function:: Camera.smooth.linear(speed)
@@ -539,7 +539,7 @@ Smoothly moves the camera towards to snapping goal with constant speed.
 
 **Examples**::
 
-   cam.smoother = Camera.smooth.linear(100)
+   cam.smoother=Camera.smooth.linear(100)
 
 ::
 
@@ -559,7 +559,7 @@ moves more quickly.
 
 **Examples**::
 
-   cam.smoother = Camera.smooth.damped(10)
+   cam.smoother=Camera.smooth.damped(10)
 
 ::
 

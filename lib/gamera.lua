@@ -6,12 +6,12 @@
 -- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -- Based on YaciCode, from Julien Patte and LuaObject, from Sebastien Rocca-Serra
 
-local gamera = {}
+local gamera={}
 
 -- Private attributes and methods
 
-local gameraMt = {__index = gamera}
-local abs, min, max = math.abs, math.min, math.max
+local gameraMt={__index=gamera}
+local abs, min, max=math.abs, math.min, math.max
 
 local function clamp(x, minX, maxX)
   return x < minX and minX or (x>maxX and maxX or x)
@@ -37,47 +37,47 @@ local function checkAABB(l,t,w,h)
 end
 
 local function getVisibleArea(self, scale)
-  scale = scale or self.scale
-  local sin, cos = abs(self.sin), abs(self.cos)
-  local w,h = self.w / scale, self.h / scale
-  w,h = cos*w + sin*h, sin*w + cos*h
+  scale=scale or self.scale
+  local sin, cos=abs(self.sin), abs(self.cos)
+  local w,h=self.w / scale, self.h / scale
+  w,h=cos*w + sin*h, sin*w + cos*h
   return min(w,self.ww), min(h, self.wh)
 end
 
 local function cornerTransform(self, x,y)
-  local scale, sin, cos = self.scale, self.sin, self.cos
-  x,y = x - self.x, y - self.y
-  x,y = -cos*x + sin*y, -sin*x - cos*y
+  local scale, sin, cos=self.scale, self.sin, self.cos
+  x,y=x - self.x, y - self.y
+  x,y=-cos*x + sin*y, -sin*x - cos*y
   return self.x - (x/scale + self.l), self.y - (y/scale + self.t)
 end
 
 local function adjustPosition(self)
-  local wl,wt,ww,wh = self.wl, self.wt, self.ww, self.wh
-  local w,h = getVisibleArea(self)
-  local w2,h2 = w*0.5, h*0.5
+  local wl,wt,ww,wh=self.wl, self.wt, self.ww, self.wh
+  local w,h=getVisibleArea(self)
+  local w2,h2=w*0.5, h*0.5
 
-  local left, right  = wl + w2, wl + ww - w2
-  local top,  bottom = wt + h2, wt + wh - h2
+  local left, right =wl + w2, wl + ww - w2
+  local top,  bottom=wt + h2, wt + wh - h2
 
-  self.x, self.y = clamp(self.x, left, right), clamp(self.y, top, bottom)
+  self.x, self.y=clamp(self.x, left, right), clamp(self.y, top, bottom)
 end
 
 local function adjustScale(self)
-  local w,h,ww,wh = self.w, self.h, self.ww, self.wh
-  local rw,rh     = getVisibleArea(self, 1)      -- rotated frame: area around the window, rotated without scaling
-  local sx,sy     = rw/ww, rh/wh                 -- vert/horiz scale: minimun scales that the window needs to occupy the world
-  local rscale    = max(sx,sy)
+  local w,h,ww,wh=self.w, self.h, self.ww, self.wh
+  local rw,rh    =getVisibleArea(self, 1)      -- rotated frame: area around the window, rotated without scaling
+  local sx,sy    =rw/ww, rh/wh                 -- vert/horiz scale: minimun scales that the window needs to occupy the world
+  local rscale   =max(sx,sy)
 
-  self.scale = max(self.scale, rscale)
+  self.scale=max(self.scale, rscale)
 end
 
 -- Public interface
 
 function gamera.new(l,t,w,h)
 
-  local sw,sh = love.graphics.getWidth(), love.graphics.getHeight()
+  local sw,sh=love.graphics.getWidth(), love.graphics.getHeight()
 
-  local cam = setmetatable({
+  local cam=setmetatable({
     x=0, y=0,
     scale=1,
     angle=0, sin=math.sin(0), cos=math.cos(0),
@@ -92,7 +92,7 @@ end
 function gamera:setWorld(l,t,w,h)
   checkAABB(l,t,w,h)
 
-  self.wl, self.wt, self.ww, self.wh = l,t,w,h
+  self.wl, self.wt, self.ww, self.wh=l,t,w,h
 
   adjustPosition(self)
 end
@@ -100,7 +100,7 @@ end
 function gamera:setWindow(l,t,w,h)
   checkAABB(l,t,w,h)
 
-  self.l, self.t, self.w, self.h, self.w2, self.h2 = l,t,w,h, w*0.5, h*0.5
+  self.l, self.t, self.w, self.h, self.w2, self.h2=l,t,w,h, w*0.5, h*0.5
 
   adjustPosition(self)
 end
@@ -112,7 +112,7 @@ function gamera:setPosition(x,y)
   checkNumber(x, "x")
   checkNumber(y, "y")
 
-  self.x, self.y = x,y
+  self.x, self.y=x,y
 
   adjustPosition(self)
 end
@@ -120,7 +120,7 @@ end
 function gamera:setScale(scale)
   checkNumber(scale, "scale")
 
-  self.scale = scale
+  self.scale=scale
 
   adjustScale(self)
   adjustPosition(self)
@@ -129,8 +129,8 @@ end
 function gamera:setAngle(angle)
   checkNumber(angle, "angle")
 
-  self.angle = angle
-  self.cos, self.sin = math.cos(angle), math.sin(angle)
+  self.angle=angle
+  self.cos, self.sin=math.cos(angle), math.sin(angle)
 
   adjustScale(self)
   adjustPosition(self)
@@ -157,17 +157,17 @@ function gamera:getAngle()
 end
 
 function gamera:getVisible()
-  local w,h = getVisibleArea(self)
+  local w,h=getVisibleArea(self)
   return self.x - w*0.5, self.y - h*0.5, w, h
 end
 
 function gamera:getVisibleCorners()
-  local x,y,w2,h2 = self.x, self.y, self.w2, self.h2
+  local x,y,w2,h2=self.x, self.y, self.w2, self.h2
 
-  local x1,y1 = cornerTransform(self, x-w2,y-h2)
-  local x2,y2 = cornerTransform(self, x+w2,y-h2)
-  local x3,y3 = cornerTransform(self, x+w2,y+h2)
-  local x4,y4 = cornerTransform(self, x-w2,y+h2)
+  local x1,y1=cornerTransform(self, x-w2,y-h2)
+  local x2,y2=cornerTransform(self, x+w2,y-h2)
+  local x3,y3=cornerTransform(self, x+w2,y+h2)
+  local x4,y4=cornerTransform(self, x-w2,y+h2)
 
   return x1,y1,x2,y2,x3,y3,x4,y4
 end
@@ -176,7 +176,7 @@ function gamera:draw(f)
   love.graphics.setScissor(self:getWindow())
 
   love.graphics.push()
-    local scale = self.scale
+    local scale=self.scale
     love.graphics.scale(scale)
 
     love.graphics.translate((self.w2 + self.l) / scale, (self.h2+self.t) / scale)
@@ -191,57 +191,57 @@ function gamera:draw(f)
 end
 
 function gamera:toWorld(x,y)
-  local scale, sin, cos = self.scale, self.sin, self.cos
-  x,y = (x - self.w2 - self.l) / scale, (y - self.h2 - self.t) / scale
-  x,y = cos*x - sin*y, sin*x + cos*y
+  local scale, sin, cos=self.scale, self.sin, self.cos
+  x,y=(x - self.w2 - self.l) / scale, (y - self.h2 - self.t) / scale
+  x,y=cos*x - sin*y, sin*x + cos*y
   return x + self.x, y + self.y
 end
 
 function gamera:toScreen(x,y)
-  local scale, sin, cos = self.scale, self.sin, self.cos
-  x,y = x - self.x, y - self.y
-  x,y = cos*x + sin*y, -sin*x + cos*y
+  local scale, sin, cos=self.scale, self.sin, self.cos
+  x,y=x - self.x, y - self.y
+  x,y=cos*x + sin*y, -sin*x + cos*y
   return scale * x + self.w2 + self.l, scale * y + self.h2 + self.t
 end
 
 function gamera:static()
-  self.state = nil;
+  self.state=nil;
 end
 
 function gamera:lockOnPlayer()
-  self.follow = game.pl.c_body;
-  self.state = 'follow';
+  self.follow=game.pl.c_body;
+  self.state='follow';
 end
 
 function gamera:moveTo(x, y, time)
-  self.from = Vec2(self.x, self.y);
-  self.to = Vec2(x, y);
-  self.dir = Vec2(self.from.x < self.to.x and 1 or -1, self.from.y < self.to.y and 1 or -1);
-  self.dist = Vec2( math.abs(self.from.x-self.to.x)/time*self.dir.x, math.abs(self.from.y-self.to.y)/time*self.dir.y);
-  self.move = Vec2(self.x, self.y)
-  self.time = time;
-  self.state = 'move_to';
+  self.from=Vec2(self.x, self.y);
+  self.to=Vec2(x, y);
+  self.dir=Vec2(self.from.x < self.to.x and 1 or -1, self.from.y < self.to.y and 1 or -1);
+  self.dist=Vec2( math.abs(self.from.x-self.to.x)/time*self.dir.x, math.abs(self.from.y-self.to.y)/time*self.dir.y);
+  self.move=Vec2(self.x, self.y)
+  self.time=time;
+  self.state='move_to';
 end
 
 function gamera:update(dt)
   -- print(game.cam.x)
   if (self.state == 'move_to') then
     
-    local vx, vy = self.dist.x*dt, self.dist.y*dt;
+    local vx, vy=self.dist.x*dt, self.dist.y*dt;
 
-    self.move.x = self.move.x + vx;
-    self.move.y = self.move.y + vy;
+    self.move.x=self.move.x + vx;
+    self.move.y=self.move.y + vy;
 
     if (self.dir.x == 1 and self.move.x >= self.to.x) then
-      self.move.x = self.to.x;
+      self.move.x=self.to.x;
     elseif (self.dir.x == -1 and self.move.x <= self.to.x) then
-      self.move.x = self.to.x;
+      self.move.x=self.to.x;
     end
 
     if (self.dir.y == 1 and self.move.y >= self.to.y) then
-      self.move.y = self.to.y;
+      self.move.y=self.to.y;
     elseif (self.dir.y == -1 and self.move.y <= self.to.y) then
-      self.move.y = self.to.y;
+      self.move.y=self.to.y;
     end
 
     self:setPosition(self.move.x, (self.move.y));

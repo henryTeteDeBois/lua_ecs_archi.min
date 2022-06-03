@@ -3,7 +3,7 @@ hump.signal
 
 ::
 
-    Signal = require 'hump.signal'
+    Signal=require 'hump.signal'
 
 A simple yet effective implementation of `Signals and Slots
 <http://en.wikipedia.org/wiki/Signals_and_slots>`_, aka the `Observer pattern
@@ -36,8 +36,8 @@ signals that match a `Lua string pattern
     -- in main.lua
     function love.keypressed(key)
         if key == ' ' then
-            local x,y   = player.pos:unpack()
-            local dx,dy = player.direction:unpack()
+            local x,y  =player.pos:unpack()
+            local dx,dy=player.direction:unpack()
             Signal.emit('shoot', x,y, dx,dy)
         end
     end
@@ -76,7 +76,7 @@ global registry. Likewise, the global registry does not affect the instance.
 
 **Example**::
 
-    player.signals = Signal.new()
+    player.signals=Signal.new()
 
 
 .. function:: Signal.register(s, f)
@@ -94,7 +94,7 @@ Registers a function ``f`` to be called when signal ``s`` is emitted.
 
 ::
 
-    handle = Signal.register('level-load', function(level) level.show_help() end)
+    handle=Signal.register('level-load', function(level) level.show_help() end)
 
 ::
 

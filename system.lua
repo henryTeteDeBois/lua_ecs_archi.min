@@ -1,12 +1,12 @@
-S_DrawBodyOutline = Tiny.processingSystem()
-S_DrawBodyOutline.active = false;
+S_DrawBodyOutline=Tiny.processingSystem()
+S_DrawBodyOutline.active=false;
 
 function S_DrawBodyOutline:filter(e)
     return e:has_active('c_b') and e.c_b.draw_outline == true
 end
 
 function S_DrawBodyOutline:process(e, dt)
-    local c_b = e.c_b
+    local c_b=e.c_b
     
     love.graphics.setColor(unpack(c_b.draw_outile_color))
     love.graphics.setLineWidth(1)

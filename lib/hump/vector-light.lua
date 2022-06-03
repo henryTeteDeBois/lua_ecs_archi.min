@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local sqrt, cos, sin, atan2 = math.sqrt, math.cos, math.sin, math.atan2
+local sqrt, cos, sin, atan2=math.sqrt, math.cos, math.sin, math.atan2
 
 local function str(x,y)
 	return "("..tonumber(x)..","..tonumber(y)..")"
@@ -79,13 +79,13 @@ local function len(x,y)
 end
 
 local function fromPolar(angle, radius)
-	radius = radius or 1
+	radius=radius or 1
 	return cos(angle)*radius, sin(angle)*radius
 end
 
 local function randomDirection(len_min, len_max)
-	len_min = len_min or 1
-	len_max = len_max or len_min
+	len_min=len_min or 1
+	len_max=len_max or len_min
 
 	assert(len_max > 0, "len_max must be greater than zero")
 	assert(len_max >= len_min, "len_max must be greater than or equal to len_min")
@@ -107,7 +107,7 @@ local function dist(x1,y1, x2,y2)
 end
 
 local function normalize(x,y)
-	local l = len(x,y)
+	local l=len(x,y)
 	if l > 0 then
 		return x/l, y/l
 	end
@@ -115,7 +115,7 @@ local function normalize(x,y)
 end
 
 local function rotate(phi, x,y)
-	local c, s = cos(phi), sin(phi)
+	local c, s=cos(phi), sin(phi)
 	return c*x - s*y, s*x + c*y
 end
 
@@ -124,19 +124,19 @@ local function perpendicular(x,y)
 end
 
 local function project(x,y, u,v)
-	local s = (x*u + y*v) / (u*u + v*v)
+	local s=(x*u + y*v) / (u*u + v*v)
 	return s*u, s*v
 end
 
 local function mirror(x,y, u,v)
-	local s = 2 * (x*u + y*v) / (u*u + v*v)
+	local s=2 * (x*u + y*v) / (u*u + v*v)
 	return s*u - x, s*v - y
 end
 
 -- ref.: http://blog.signalsondisplay.com/?p=336
 local function trim(maxLen, x, y)
-	local s = maxLen * maxLen / len2(x, y)
-	s = s > 1 and 1 or math.sqrt(s)
+	local s=maxLen * maxLen / len2(x, y)
+	s=s > 1 and 1 or math.sqrt(s)
 	return x * s, y * s
 end
 
@@ -149,38 +149,38 @@ end
 
 -- the module
 return {
-	str = str,
+	str=str,
 
-	fromPolar       = fromPolar,
-	toPolar         = toPolar,
-	randomDirection = randomDirection,
+	fromPolar      =fromPolar,
+	toPolar        =toPolar,
+	randomDirection=randomDirection,
 
 	-- arithmetic
-	mul    = mul,
-	div    = div,
-	idiv   = idiv,
-	add    = add,
-	sub    = sub,
-	permul = permul,
-	dot    = dot,
-	det    = det,
-	cross  = det,
+	mul   =mul,
+	div   =div,
+	idiv  =idiv,
+	add   =add,
+	sub   =sub,
+	permul=permul,
+	dot   =dot,
+	det   =det,
+	cross =det,
 
 	-- relation
-	eq = eq,
-	lt = lt,
-	le = le,
+	eq=eq,
+	lt=lt,
+	le=le,
 
 	-- misc operations
-	len2          = len2,
-	len           = len,
-	dist2         = dist2,
-	dist          = dist,
-	normalize     = normalize,
-	rotate        = rotate,
-	perpendicular = perpendicular,
-	project       = project,
-	mirror        = mirror,
-	trim          = trim,
-	angleTo       = angleTo,
+	len2         =len2,
+	len          =len,
+	dist2        =dist2,
+	dist         =dist,
+	normalize    =normalize,
+	rotate       =rotate,
+	perpendicular=perpendicular,
+	project      =project,
+	mirror       =mirror,
+	trim         =trim,
+	angleTo      =angleTo,
 }

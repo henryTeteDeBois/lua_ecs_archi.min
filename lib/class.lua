@@ -1,22 +1,22 @@
-Class = {}
+Class={}
 
 -- default (empty) constructor
 function Class:init(...) end
 
 -- create a subclass
 function Class:extend(obj)
-	local obj = obj or {}
+	local obj=obj or {}
 
 	local function copyTable(table, destination)
-		local table = table or {}
-		local result = destination or {}
+		local table=table or {}
+		local result=destination or {}
 
 		for k, v in pairs(table) do
 			if not result[k] then
 				if type(v) == "table" and k ~= "__index" and k ~= "__newindex" then
-					result[k] = copyTable(v)
+					result[k]=copyTable(v)
 				else
-					result[k] = v
+					result[k]=v
 				end
 			end
 		end
@@ -26,18 +26,18 @@ function Class:extend(obj)
 
 	copyTable(self, obj)
 
-	obj._ = obj._ or {}
+	obj._=obj._ or {}
 
-	local mt = {}
+	local mt={}
 
-	-- create new objects directly, like o = Object()
-	mt.__call = function(self, ...)
+	-- create new objects directly, like o=Object()
+	mt.__call=function(self, ...)
 		return self:new(...)
 	end
 
 	-- allow for getters and setters
-	mt.__index = function(table, key)
-		local val = rawget(table._, key)
+	mt.__index=function(table, key)
+		local val=rawget(table._, key)
 		if val and type(val) == "table" and (val.get ~= nil or val.value ~= nil) then
 			if val.get then
 				if type(val.get) == "function" then
@@ -53,21 +53,21 @@ function Class:extend(obj)
 		end
 	end
 
-	mt.__newindex = function(table, key, value)
-		local val = rawget(table._, key)
+	mt.__newindex=function(table, key, value)
+		local val=rawget(table._, key)
 		if val and type(val) == "table" and ((val.set ~= nil and val._ == nil) or val.value ~= nil) then
-			local v = value
+			local v=value
 			if val.set then
 				if type(val.set) == "function" then
-					v = val.set(table, value, val.value)
+					v=val.set(table, value, val.value)
 				else
-					v = val.set
+					v=val.set
 				end
 			end
-			val.value = v
+			val.value=v
 			if val and val.afterSet then val.afterSet(table, v) end
 		else
-			table._[key] = value
+			table._[key]=value
 		end
 	end
 
@@ -89,7 +89,7 @@ end
 
 -- create an instance of an object with constructor parameters
 function Class:new(...)
-	local obj = self:extend({})
+	local obj=self:extend({})
 	if obj.init then obj:init(...) end
 	return obj
 end
@@ -97,7 +97,7 @@ end
 
 ---@diagnostic disable-next-line: lowercase-global
 function class(attr)
-	attr = attr or {}
+	attr=attr or {}
 	return Class:extend(attr)
 end
 

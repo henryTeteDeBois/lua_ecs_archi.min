@@ -24,17 +24,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local Registry = {}
-Registry.__index = function(self, key)
+local Registry={}
+Registry.__index=function(self, key)
 	return Registry[key] or (function()
-		local t = {}
+		local t={}
 		rawset(self, key, t)
 		return t
 	end)()
 end
 
 function Registry:register(s, f)
-	self[s][f] = f
+	self[s][f]=f
 	return f
 end
 
@@ -45,16 +45,16 @@ function Registry:emit(s, ...)
 end
 
 function Registry:remove(s, ...)
-	local f = {...}
-	for i = 1,select('#', ...) do
-		self[s][f[i]] = nil
+	local f={...}
+	for i=1,select('#', ...) do
+		self[s][f[i]]=nil
 	end
 end
 
 function Registry:clear(...)
-	local s = {...}
-	for i = 1,select('#', ...) do
-		self[s[i]] = {}
+	local s={...}
+	for i=1,select('#', ...) do
+		self[s[i]]={}
 	end
 end
 
@@ -79,7 +79,7 @@ end
 
 function Registry:clearPattern(p)
 	for s in pairs(self) do
-		if s:match(p) then self[s] = {} end
+		if s:match(p) then self[s]={} end
 	end
 end
 
@@ -89,14 +89,14 @@ function Registry.new()
 end
 
 -- default instance
-local default = Registry.new()
+local default=Registry.new()
 
 -- module forwards calls to default instance
-local module = {}
+local module={}
 for k in pairs(Registry) do
 	if k ~= "__index" then
-		module[k] = function(...) return default[k](default, ...) end
+		module[k]=function(...) return default[k](default, ...) end
 	end
 end
 
-return setmetatable(module, {__call = Registry.new})
+return setmetatable(module, {__call=Registry.new})

@@ -16,33 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  --]]
 
- local paddy = {}
- paddy.debug = false
+ local paddy={}
+ paddy.debug=false
  
  -- The size of the buttons which can be pressed.
- paddy.buttonw = 50
- paddy.buttonh = 50
+ paddy.buttonw=50
+ paddy.buttonh=50
  
  
  -- This lists any buttons which are currently being pressed
- paddy.touched = {}
+ paddy.touched={}
  
  -- Create a dpad widget
- paddy.dpad = {}
+ paddy.dpad={}
  
  -- The properties of the canvas to draw
- paddy.dpad.w = paddy.buttonw*3
- paddy.dpad.h = paddy.buttonh*3
- paddy.dpad.x = 15
- paddy.dpad.y = love.graphics.getHeight()-15-paddy.dpad.h
- paddy.dpad.canvas = love.graphics.newCanvas(paddy.dpad.w,paddy.dpad.h)
+ paddy.dpad.w=paddy.buttonw*3
+ paddy.dpad.h=paddy.buttonh*3
+ paddy.dpad.x=15
+ paddy.dpad.y=love.graphics.getHeight()-15-paddy.dpad.h
+ paddy.dpad.canvas=love.graphics.newCanvas(paddy.dpad.w,paddy.dpad.h)
  
  -- These just make things look prettier
- paddy.dpad.opacity = 200
- paddy.dpad.padding = 5
+ paddy.dpad.opacity=200
+ paddy.dpad.padding=5
  
  -- Setup the names for the buttons, and their position on the canvas
- paddy.dpad.buttons = {
+ paddy.dpad.buttons={
      { name="up",   x=paddy.buttonw, y=0, w=paddy.buttonw, h=paddy.buttonh*1.18 },
      { name="left", x=0, y=paddy.buttonh, w=paddy.buttonw*1.5, h=paddy.buttonh },
      { name="right",x=paddy.buttonw*3-paddy.buttonw*1.5 , y=paddy.buttonh, w=paddy.buttonw*1.5, h=paddy.buttonh },
@@ -51,21 +51,21 @@
  
  
  -- Create a buttons widget
- paddy.buttons = {}
+ paddy.buttons={}
  
  -- The properties of the canvas to draw
- paddy.buttons.w = paddy.buttonw*3
- paddy.buttons.h = paddy.buttonh*3
- paddy.buttons.x = love.graphics.getWidth()-20-paddy.buttons.w
- paddy.buttons.y = love.graphics.getHeight()-20-paddy.buttons.h
- paddy.buttons.canvas = love.graphics.newCanvas(paddy.buttons.w,paddy.buttons.h)
+ paddy.buttons.w=paddy.buttonw*3
+ paddy.buttons.h=paddy.buttonh*3
+ paddy.buttons.x=love.graphics.getWidth()-20-paddy.buttons.w
+ paddy.buttons.y=love.graphics.getHeight()-20-paddy.buttons.h
+ paddy.buttons.canvas=love.graphics.newCanvas(paddy.buttons.w,paddy.buttons.h)
  
  -- These just make things look prettier
- paddy.buttons.opacity = 200
- paddy.buttons.padding = 5
+ paddy.buttons.opacity=200
+ paddy.buttons.padding=5
  
  -- Setup the names for the buttons, and their position on the canvas
- paddy.buttons.buttons = {
+ paddy.buttons.buttons={
      { name="b", x=paddy.buttonw, y=0, w=paddy.buttonw, h=paddy.buttonh },
      -- { name="x", x=0, y=paddy.buttonh },
      -- { name="b", x=paddy.buttonw*2, y=paddy.buttonh },
@@ -73,7 +73,7 @@
  }
  
  -- Stores any widgets containing interactive buttons
- paddy.widgets = { paddy.dpad, paddy.buttons }
+ paddy.widgets={ paddy.dpad, paddy.buttons }
  
  
  function paddy.draw()
@@ -104,9 +104,9 @@
              if paddy.debug then
                  love.graphics.setColor(1,1,1,1)
                  
-                 local font = love.graphics.newFont(20)
+                 local font=love.graphics.newFont(20)
                  love.graphics.setFont(font)
-                 local str = button.name
+                 local str=button.name
                  
  
                  
@@ -129,7 +129,7 @@
      -- debug related
      if paddy.debug then
          for _,id in ipairs(paddy.touched) do
-             local x,y = love.touch.getPosition(id)
+             local x,y=love.touch.getPosition(id)
              love.graphics.circle("fill",x,y,20)
          end
      end
@@ -150,18 +150,18 @@
      -- Decide which buttons are being pressed based on a 
      -- simple collision, then change the state of the button
  
-     paddy.touched = love.touch.getTouches()
+     paddy.touched=love.touch.getTouches()
      
       for _,widget in ipairs(paddy.widgets) do
          for _,button in ipairs(widget.buttons) do
-             button.isDown = false
+             button.isDown=false
              for _,id in ipairs(paddy.touched) do	
-                 local tx,ty = love.touch.getPosition(id)
+                 local tx,ty=love.touch.getPosition(id)
                  if  tx >= widget.x+button.x 
                  and tx <= widget.x+button.x+button.w
                  and ty >= widget.y+button.y 
                  and ty <= widget.y+button.y+button.h then
-                     button.isDown = true
+                     button.isDown=true
                  end
              end
          end

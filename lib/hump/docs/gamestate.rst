@@ -3,7 +3,7 @@ hump.gamestate
 
 ::
 
-    Gamestate = require "hump.gamestate"
+    Gamestate=require "hump.gamestate"
 
 A gamestate encapsulates independent data and behaviour in a single table.
 
@@ -11,8 +11,8 @@ A typical game could consist of a menu-state, a level-state and a game-over-stat
 
 **Example**::
 
-    local menu = {} -- previously: Gamestate.new()
-    local game = {}
+    local menu={} -- previously: Gamestate.new()
+    local game={}
 
     function menu:draw()
         love.graphics.print("Press Enter to continue", 10, 10)
@@ -111,10 +111,10 @@ corresponding LÖVE callbacks and receive the same arguments (e.g.
 
 **Example**::
 
-    menu = {} -- previously: Gamestate.new()
+    menu={} -- previously: Gamestate.new()
 
     function menu:init()
-        self.background = love.graphics.newImage('bg.jpg')
+        self.background=love.graphics.newImage('bg.jpg')
         Buttons.initialize()
     end
 
@@ -142,7 +142,7 @@ corresponding LÖVE callbacks and receive the same arguments (e.g.
     end
 
     function menu:mousereleased(x,y, mouse_btn)
-        local button = Buttons.hovered(x,y)
+        local button=Buttons.hovered(x,y)
         if button then
             Button.select(button)
             if mouse_btn == 'l' then
@@ -167,9 +167,9 @@ callbacks.
 
 **Example**::
 
-    menu = {}
+    menu={}
     -- deprecated method:
-    menu = Gamestate.new()
+    menu=Gamestate.new()
 
 
 .. function:: Gamestate.switch(to, ...)
@@ -245,13 +245,13 @@ Useful for pause screens, menus, etc.
 **Example**::
 
     -- pause gamestate
-    Pause = Gamestate.new()
+    Pause=Gamestate.new()
     function Pause:enter(from)
-        self.from = from -- record previous state
+        self.from=from -- record previous state
     end
 
     function Pause:draw()
-        local W, H = love.graphics.getWidth(), love.graphics.getHeight()
+        local W, H=love.graphics.getWidth(), love.graphics.getHeight()
         -- draw previous screen
         self.from:draw()
         -- overlay with pause message
@@ -329,7 +329,7 @@ invoked as usual.
 
 This is by done by overwriting the love callbacks, e.g.::
 
-    local old_update = love.update
+    local old_update=love.update
     function love.update(dt)
         old_update(dt)
         return Gamestate.current:update(dt)

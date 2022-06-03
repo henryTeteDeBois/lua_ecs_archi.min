@@ -11,14 +11,14 @@
 module(..., package.seeall)
 
 local function parseName(str)
-    local _begin, _end, cls = assert(str:find('%s*([a-zA-Z][a-zA-Z0-9_]*)%s*%:?'))
+    local _begin, _end, cls=assert(str:find('%s*([a-zA-Z][a-zA-Z0-9_]*)%s*%:?'))
     if not str:find(':', _end) then
         return cls, {}
     end
-    local bases = {}
+    local bases={}
     while true do
         local base
-        _begin, _end, base = str:find('%s*([a-zA-Z][a-zA-Z0-9_]*)%s*%,?', _end + 1)
+        _begin, _end, base=str:find('%s*([a-zA-Z][a-zA-Z0-9_]*)%s*%,?', _end + 1)
         if base then
             table.insert(bases, base)
         else
@@ -29,49 +29,49 @@ local function parseName(str)
 end
 
 local function create(t, ...)
-    local o = {}
+    local o={}
     if t.__init__ then
         t.__init__(o, ...)
     end
-    return setmetatable(o, {__index = t, __class__ = t})
+    return setmetatable(o, {__index=t, __class__=t})
 end
 
 function class(name)
-    local env = getfenv(2)
-    local clsName, bases = parseName(name)
+    local env=getfenv(2)
+    local clsName, bases=parseName(name)
     for i, v in ipairs(bases) do
-        bases[i] = assert(env[v])   --Replace string name with class table
+        bases[i]=assert(env[v])   --Replace string name with class table
     end
 
     return function (t)
-        local meta = {__call = create, __bases__ = bases}
-        meta.__index = function(nouse, key)
+        local meta={__call=create, __bases__=bases}
+        meta.__index=function(nouse, key)
             for _, cls in ipairs(meta.__bases__) do
-                local val = cls[key]    --Do a recursive search on each cls
+                local val=cls[key]    --Do a recursive search on each cls
                 if val ~= nil then
                     return val
                 end
             end
         end
-        local clsobj = setmetatable(t, meta)
-        env[clsName] = clsobj
+        local clsobj=setmetatable(t, meta)
+        env[clsName]=clsobj
         return clsobj
     end
 end
 
 function getClass(o)
-    local meta = assert(getmetatable(o))
+    local meta=assert(getmetatable(o))
     return meta.__class__
 end
 
 function getBaseClasses(c)
-    local meta = assert(getmetatable(c))
+    local meta=assert(getmetatable(c))
     return meta.__bases__
 end
 
 local function upTraverse(cls)
     coroutine.yield(cls)
-    local bases = getmetatable(cls).__bases__
+    local bases=getmetatable(cls).__bases__
     for _, v in ipairs(bases) do
         upTraverse(v)
     end
@@ -82,7 +82,7 @@ function upClasses(cls)
 end
 
 function isInstanceOf(o, c)
-    local cls = assert(getClass(o))
+    local cls=assert(getClass(o))
     for one in upClasses(cls) do
         if one == c then
             return true
@@ -91,5 +91,5 @@ function isInstanceOf(o, c)
     return false
 end
 
-_G.class = class
-_G.isInstanceOf = isInstanceOf
+_G.class=class
+_G.isInstanceOf=isInstanceOf

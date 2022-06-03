@@ -1,10 +1,10 @@
-local timer = require 'timer'()
+local timer=require 'timer'()
 
 describe('hump.timer', function()
   it('runs a function during a specified time', function()
     local delta, remaining
 
-    timer:during(10, function(...) delta, remaining = ... end)
+    timer:during(10, function(...) delta, remaining=... end)
 
     timer:update(2)
     assert.are.equal(delta, 2)
@@ -20,11 +20,11 @@ describe('hump.timer', function()
   end)
 
   it('runs a function after a specified time', function()
-    local finished1 = false
-    local finished2 = false
+    local finished1=false
+    local finished2=false
 
-    timer:after(3, function(...) finished1 = true end)
-    timer:after(5, function(...) finished2 = true end)
+    timer:after(3, function(...) finished1=true end)
+    timer:after(5, function(...) finished2=true end)
 
     timer:update(4)
     assert.are.equal(true, finished1)
@@ -36,9 +36,9 @@ describe('hump.timer', function()
   end)
 
   it('runs a function every so often', function()
-    local count = 0
+    local count=0
 
-    timer:every(1, function(...) count = count + 1 end)
+    timer:every(1, function(...) count=count + 1 end)
 
     timer:update(3)
     assert.are.equal(3, count)
@@ -51,9 +51,9 @@ describe('hump.timer', function()
     local state
 
     timer:script(function(wait)
-      state = 'foo'
+      state='foo'
       wait(1)
-      state = 'bar'
+      state='bar'
     end)
 
     assert.are.equal('foo', state)

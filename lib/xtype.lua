@@ -26,15 +26,15 @@ SOFTWARE.
 
 local ffi
 do
-  local ok; ok, ffi = pcall(require, "ffi")
-  ffi = ok and ffi or nil
+  local ok; ok, ffi=pcall(require, "ffi")
+  ffi=ok and ffi or nil
 end
-local loadstring = loadstring or load
-local table_unpack = table.unpack or unpack
-local type, select, getmetatable, pcall = type, select, getmetatable, pcall
-local table_pack = table.pack or function(...)
-  local t = {...}
-  t.n = select("#", ...)
+local loadstring=loadstring or load
+local table_unpack=table.unpack or unpack
+local type, select, getmetatable, pcall=type, select, getmetatable, pcall
+local table_pack=table.pack or function(...)
+  local t={...}
+  t.n=select("#", ...)
   return t
 end
 
@@ -44,31 +44,31 @@ end
 
 -- Xtype
 
-local Xtype = {}
+local Xtype={}
 
 local function Xtype_tostring(t)
-  local mt = getmetatable(t)
-  mt.__tostring = nil
-  local str = string.gsub(tostring(t), "table:", "Xtype<"..t.Xtype_name..">:", 1)
-  mt.__tostring = Xtype_tostring
+  local mt=getmetatable(t)
+  mt.__tostring=nil
+  local str=string.gsub(tostring(t), "table:", "Xtype<"..t.Xtype_name..">:", 1)
+  mt.__tostring=Xtype_tostring
   return str
 end
 
-local type_mt = {
-  Xtype = "Xtype",
-  __tostring = Xtype_tostring
+local type_mt={
+  Xtype="Xtype",
+  __tostring=Xtype_tostring
 }
 
 local Xtype_is
 -- Check if a value is a valid type.
 local function Xtype_check(t) return type(t) == "string" or Xtype_is(t, "Xtype") end
-Xtype.check = Xtype_check
+Xtype.check=Xtype_check
 -- Check if an argument is a type.
 local function check_type(v, index)
   if not Xtype_check(v) then error_arg(index, "type") end
 end
 
-local ctype_types = {} -- map of ctype id => type
+local ctype_types={} -- map of ctype id => type
 
 -- Get/bind a type to a ctype (LuaJIT FFI).
 --
@@ -80,10 +80,10 @@ local ctype_types = {} -- map of ctype id => type
 -- t: (optional) type
 -- return bound type
 function Xtype.ctype(ctype, t)
-  local id = tonumber(ctype)
+  local id=tonumber(ctype)
   if t and not ctype_types[id] then
     check_type(t, 2)
-    ctype_types[id] = t
+    ctype_types[id]=t
   end
   return ctype_types[id]
 end
@@ -92,29 +92,29 @@ local function cdata_get(v) return v.__Xtype end
 
 -- Get terminal type of a value.
 local function Xtype_get(v)
-  local v_type = type(v)
+  local v_type=type(v)
   if v_type == "table" or v_type == "userdata" then
-    local mt = getmetatable(v)
+    local mt=getmetatable(v)
     return mt and mt.Xtype or v_type
   elseif v_type == "cdata" then
-    local xt = ctype_types[tonumber(ffi.typeof(v))]
+    local xt=ctype_types[tonumber(ffi.typeof(v))]
     if not xt then -- try to acquire type from field
-      local ok; ok, xt = pcall(cdata_get, v)
+      local ok; ok, xt=pcall(cdata_get, v)
       if ok then Xtype.ctype(ffi.typeof(v), xt) end
     end
     return xt or v_type
   else return v_type end
 end
-Xtype.get = Xtype_get
+Xtype.get=Xtype_get
 
 -- Check if a value is of type t.
-Xtype_is = function(v, t)
+Xtype_is=function(v, t)
   check_type(t, 2)
-  local vt = Xtype_get(v)
+  local vt=Xtype_get(v)
   if type(vt) == "table" then return vt.Xtype_set[t] ~= nil
   else return vt == t end
 end
-Xtype.is = Xtype_is
+Xtype.is=Xtype_is
 
 -- Create a type.
 --
@@ -129,44 +129,44 @@ Xtype.is = Xtype_is
 function Xtype.create(name, ...)
   if type(name) ~= "string" then error_arg(1, "string") end
   -- check base types
-  local bases = table_pack(...)
+  local bases=table_pack(...)
   for i=1, bases.n do check_type(bases[i], i+1) end
   -- create
-  local t = setmetatable({
-    Xtype_name = name,
-    Xtype_stack = {},
-    Xtype_set = {}
+  local t=setmetatable({
+    Xtype_name=name,
+    Xtype_stack={},
+    Xtype_set={}
   }, type_mt)
   -- append self
   table.insert(t.Xtype_stack, t)
-  t.Xtype_set[t] = true
+  t.Xtype_set[t]=true
   -- Inherits from base types (some kind of cascade breadth first search).
   -- Each base type is evaluated left to right, with one type inheritance per step.
-  local step = 1
-  local browsing = true
+  local step=1
+  local browsing=true
   while browsing do
-    browsing = false
+    browsing=false
     for _, base in ipairs(bases) do
       if type(base) == "string" then -- primitive type
         if step == 1 then
-          browsing = true
+          browsing=true
           if not t.Xtype_set[base] then
-            t.Xtype_set[base] = true
+            t.Xtype_set[base]=true
             table.insert(t.Xtype_stack, base)
           end
         end
       else -- non-primitive type
-        local st = base.Xtype_stack[step]
+        local st=base.Xtype_stack[step]
         if st then
-          browsing = true
+          browsing=true
           if not t.Xtype_set[st] then
-            t.Xtype_set[st] = true
+            t.Xtype_set[st]=true
             table.insert(t.Xtype_stack, st)
           end
         end
       end
     end
-    step = step+1
+    step=step+1
   end
   return t
 end
@@ -187,33 +187,33 @@ end
 -- Multifunction.
 
 local function multifunction_tostring(t)
-  local mt = getmetatable(t)
-  mt.__tostring = nil
-  local str = string.gsub(tostring(t), "table:", "multifunction:", 1)
-  mt.__tostring = multifunction_tostring
+  local mt=getmetatable(t)
+  mt.__tostring=nil
+  local str=string.gsub(tostring(t), "table:", "multifunction:", 1)
+  mt.__tostring=multifunction_tostring
   return str
 end
 
-local multifunction = {}
+local multifunction={}
 
 -- Check and return signature (list of types).
 -- ...: types
 local function check_sign(...)
-  local sign = table_pack(...)
+  local sign=table_pack(...)
   for i=1, sign.n do check_type(sign[i], i) end
   return sign
 end
-Xtype.checkSign = check_sign
+Xtype.checkSign=check_sign
 
 -- Return formatted signature string.
 local function format_sign(sign)
-  local names = {}
+  local names={}
   for _, t in ipairs(sign) do
     table.insert(names, type(t) == "string" and t or t.Xtype_name)
   end
   return "("..table.concat(names, ", ")..")"
 end
-Xtype.formatSign = format_sign
+Xtype.formatSign=format_sign
 
 -- Stack distance to another type from a terminal type.
 -- ot: support "any" keyword
@@ -228,35 +228,35 @@ local function type_dist(t, ot)
     end
   end
 end
-Xtype.typeDist = type_dist
+Xtype.typeDist=type_dist
 
 -- Distance to another signature from a call signature.
 -- osign: support "any" keyword
 -- return distance or nothing if not generalizable to osign
 local function sign_dist(sign, osign)
-  local dist = 0
+  local dist=0
   for i=1, #sign do
-    local tdist = type_dist(sign[i], osign[i])
+    local tdist=type_dist(sign[i], osign[i])
     if not tdist then return end
-    dist = dist+tdist
+    dist=dist+tdist
   end
   return dist
 end
-Xtype.signDist = sign_dist
+Xtype.signDist=sign_dist
 
 -- Create hash sign tree.
 local function new_hsign()
-  local count = 0
+  local count=0
   local hasher_mt
-  hasher_mt = {
-    __index = function(t, k)
-      count = count+1
-      local st = setmetatable({count}, hasher_mt)
-      t[k] = st
+  hasher_mt={
+    __index=function(t, k)
+      count=count+1
+      local st=setmetatable({count}, hasher_mt)
+      t[k]=st
       return st
     end
   }
-  local root = setmetatable({count}, hasher_mt)
+  local root=setmetatable({count}, hasher_mt)
   return root
 end
 
@@ -264,11 +264,11 @@ end
 -- sign: signature, list of types
 -- return number
 local function mf_hash_sign(self, sign)
-  local node = self.hsign
-  for _, t in ipairs(sign) do node = node[t] end
+  local node=self.hsign
+  for _, t in ipairs(sign) do node=node[t] end
   return node[1]
 end
-multifunction.hashSign = mf_hash_sign
+multifunction.hashSign=mf_hash_sign
 
 -- Find candidate.
 -- return candidate or nothing if none found
@@ -278,11 +278,11 @@ multifunction.hashSign = mf_hash_sign
 ---- def: candidate definition
 local function mf_find_candidate(self, sign)
   -- find candidates
-  local candidates = {}
+  local candidates={}
   for hash, def in pairs(self.definitions) do
     if #sign == #def.sign then -- same number of parameters
-      local dist = sign_dist(sign, def.sign)
-      if dist then table.insert(candidates, {sign = sign, def = def, dist = dist}) end
+      local dist=sign_dist(sign, def.sign)
+      if dist then table.insert(candidates, {sign=sign, def=def, dist=dist}) end
     end
   end
   -- sort candidates
@@ -290,7 +290,7 @@ local function mf_find_candidate(self, sign)
   -- check for ambiguity
   if candidates[1] and candidates[2] and candidates[1].dist == candidates[2].dist then
     -- generate ambiguity error
-    local candidate_signs = {}
+    local candidate_signs={}
     for _, candidate in ipairs(candidates) do
       if candidate.dist ~= candidates[1].dist then break end
       table.insert(candidate_signs, "\t"..format_sign(candidate.def.sign))
@@ -301,48 +301,48 @@ local function mf_find_candidate(self, sign)
 end
 
 local function mf_resolve_sign(self, sign)
-  local hash = mf_hash_sign(self, sign)
-  local candidate = self.candidates[hash]
+  local hash=mf_hash_sign(self, sign)
+  local candidate=self.candidates[hash]
   if not candidate then
-    candidate = mf_find_candidate(self, sign)
+    candidate=mf_find_candidate(self, sign)
     if not candidate then -- re-try
       -- call generators
       for generator in pairs(self.generators) do generator(self, table_unpack(sign)) end
-      candidate = mf_find_candidate(self, sign)
+      candidate=mf_find_candidate(self, sign)
     end
-    self.candidates[hash] = candidate
+    self.candidates[hash]=candidate
   end
   return candidate and candidate.def.f
 end
 
 -- Unoptimized multifunction call.
 local function mf_call(self, ...)
-  local sign = table_pack(...)
-  for i=1, sign.n do sign[i] = Xtype_get(sign[i]) end
-  local f = mf_resolve_sign(self, sign)
+  local sign=table_pack(...)
+  for i=1, sign.n do sign[i]=Xtype_get(sign[i]) end
+  local f=mf_resolve_sign(self, sign)
   if not f then error("unresolved call signature "..format_sign(sign)) end
   return f(...)
 end
 
-local mfcalls = {}
+local mfcalls={}
 -- Generate optimized multifunction call.
 -- n: maximum number of parameters
 local function gen_opt_mfcall(n)
   -- cache check
-  local mfcall = mfcalls[n]
+  local mfcall=mfcalls[n]
   if mfcall then return mfcall end
   -- generate code
-  local main = [=[
-local select = select
-local Xtype_get, mf_call = ...
+  local main=[=[
+local select=select
+local Xtype_get, mf_call=...
 return function(self, ...)
   -- optimized path
-  local n = select("#", ...)
+  local n=select("#", ...)
   local hash
   --
   $hash_code
   --
-  local candidate = self.candidates[hash]
+  local candidate=self.candidates[hash]
   if candidate then return candidate.def.f(...) end
 
   -- fallback to unoptimized path
@@ -350,18 +350,18 @@ return function(self, ...)
 end
   ]=]
   -- generate table/vararg-less hashing for each arguments count
-  local hcode = "if n == 0 then hash = self.hsign[1]\n"
+  local hcode="if n == 0 then hash=self.hsign[1]\n"
   for i=1,n do
-    hcode = hcode.."elseif n == "..i.." then\n"
-    hcode = hcode.."local "..Xtype.tpllist("a$", 1, i, ", ").." = ...\n"
-    hcode = hcode.."hash = self.hsign"..Xtype.tpllist("[Xtype_get(a$)]", 1, i, "").."[1]\n"
+    hcode=hcode.."elseif n == "..i.." then\n"
+    hcode=hcode.."local "..Xtype.tpllist("a$", 1, i, ", ").."=...\n"
+    hcode=hcode.."hash=self.hsign"..Xtype.tpllist("[Xtype_get(a$)]", 1, i, "").."[1]\n"
   end
-  hcode = hcode.."end\n"
-  local code = Xtype.tplsub(main, {hash_code = hcode})
+  hcode=hcode.."end\n"
+  local code=Xtype.tplsub(main, {hash_code=hcode})
   -- compile
-  mfcall = loadstring(code, "=[Xtype-opt-mfcall #"..n.."]")(Xtype_get, mf_call)
+  mfcall=loadstring(code, "=[Xtype-opt-mfcall #"..n.."]")(Xtype_get, mf_call)
   -- cache
-  mfcalls[n] = mfcall
+  mfcalls[n]=mfcall
   return mfcall
 end
 
@@ -372,42 +372,42 @@ end
 -- f: definition function; nil to undefine
 -- ...: signature, list of types
 function multifunction:define(f, ...)
-  local sign = check_sign(...)
-  local hash = mf_hash_sign(self, sign)
+  local sign=check_sign(...)
+  local hash=mf_hash_sign(self, sign)
   if f then -- define
     -- increase call parameters, re-compile call function
     if sign.n > self.max_calln then
-      self.max_calln = sign.n
-      local fcall = gen_opt_mfcall(self.max_calln)
-      local mt = getmetatable(self)
-      self.call = fcall
-      mt.__call = fcall
+      self.max_calln=sign.n
+      local fcall=gen_opt_mfcall(self.max_calln)
+      local mt=getmetatable(self)
+      self.call=fcall
+      mt.__call=fcall
     end
     -- definition
-    local def = self.definitions[hash]
-    if def then def.f = f -- update definition
+    local def=self.definitions[hash]
+    if def then def.f=f -- update definition
     else -- new definition
-      def = {f = f, sign = sign}
-      self.definitions[hash] = def
+      def={f=f, sign=sign}
+      self.definitions[hash]=def
       -- update candidates (better or equivalent match)
       for chash, candidate in pairs(self.candidates) do
-        local dist = sign_dist(candidate.sign, sign)
+        local dist=sign_dist(candidate.sign, sign)
         if dist then
           if dist < candidate.dist then -- update if better candidate
-            candidate.def, candidate.dist = def, dist
+            candidate.def, candidate.dist=def, dist
           elseif dist == candidate.dist then -- remove candidate on ambiguity
-            self.candidates[chash] = nil
+            self.candidates[chash]=nil
           end
         end
       end
     end
   else -- undefine
-    local def = self.definitions[hash]
+    local def=self.definitions[hash]
     if def then
-      self.definitions[hash] = nil
+      self.definitions[hash]=nil
       -- remove candidates (removed definition)
       for chash, candidate in pairs(self.candidates) do
-        if candidate.def == def then self.candidates[chash] = nil end
+        if candidate.def == def then self.candidates[chash]=nil end
       end
     end
   end
@@ -417,7 +417,7 @@ end
 -- ...: call signature, list of (terminal) types
 -- return function or nil without a matching definition
 function multifunction:resolve(...)
-  local sign = check_sign(...)
+  local sign=check_sign(...)
   return mf_resolve_sign(self, sign)
 end
 
@@ -429,27 +429,27 @@ end
 -- f(multifunction, ...): called to generate new definitions
 --- ...: call signature, list of (terminal) types
 function multifunction:addGenerator(f)
-  self.generators[f] = true
+  self.generators[f]=true
 end
 
 -- Create a multifunction.
 function Xtype.multifunction()
   -- The metatable is per multifunction to independently update the call
   -- function.
-  local default_call = gen_opt_mfcall(0)
-  local multifunction_mt = {
-    Xtype = "multifunction",
-    __tostring = multifunction_tostring,
-    __index = multifunction,
-    __call = default_call
+  local default_call=gen_opt_mfcall(0)
+  local multifunction_mt={
+    Xtype="multifunction",
+    __tostring=multifunction_tostring,
+    __index=multifunction,
+    __call=default_call
   }
   return setmetatable({
-    hsign = new_hsign(),
-    definitions = {}, -- map of sign hash => {.f, .sign}
-    generators = {}, -- set of generator functions
-    candidates = {}, -- cached candidates, map of call sign hash => {.sign, .dist, .def}
-    max_calln = 0, -- maximum call parameters
-    call = default_call
+    hsign=new_hsign(),
+    definitions={}, -- map of sign hash => {.f, .sign}
+    generators={}, -- set of generator functions
+    candidates={}, -- cached candidates, map of call sign hash => {.sign, .dist, .def}
+    max_calln=0, -- maximum call parameters
+    call=default_call
   }, multifunction_mt)
 end
 
@@ -461,7 +461,7 @@ end
 -- j: end index
 -- separator: (optional) default: ", "
 function Xtype.tpllist(tpl, i, j, separator)
-  local list = {}
+  local list={}
   for k=i,j do table.insert(list, (string.gsub(tpl, "%$", k))) end
   return table.concat(list, separator or ", ")
 end
@@ -480,23 +480,23 @@ end
 --
 -- map of Lua binary op name => multifunction
 -- (add, sub, mul, div, mod, pow, concat, eq, lt, le, idiv, band, bor, bxor, shl, shr)
-Xtype.op = {
-  add = Xtype.multifunction(),
-  sub = Xtype.multifunction(),
-  mul = Xtype.multifunction(),
-  div = Xtype.multifunction(),
-  mod = Xtype.multifunction(),
-  pow = Xtype.multifunction(),
-  concat = Xtype.multifunction(),
-  eq = Xtype.multifunction(),
-  lt = Xtype.multifunction(),
-  le = Xtype.multifunction(),
-  idiv = Xtype.multifunction(),
-  band = Xtype.multifunction(),
-  bor = Xtype.multifunction(),
-  bxor = Xtype.multifunction(),
-  shl = Xtype.multifunction(),
-  shr = Xtype.multifunction()
+Xtype.op={
+  add=Xtype.multifunction(),
+  sub=Xtype.multifunction(),
+  mul=Xtype.multifunction(),
+  div=Xtype.multifunction(),
+  mod=Xtype.multifunction(),
+  pow=Xtype.multifunction(),
+  concat=Xtype.multifunction(),
+  eq=Xtype.multifunction(),
+  lt=Xtype.multifunction(),
+  le=Xtype.multifunction(),
+  idiv=Xtype.multifunction(),
+  band=Xtype.multifunction(),
+  bor=Xtype.multifunction(),
+  bxor=Xtype.multifunction(),
+  shl=Xtype.multifunction(),
+  shr=Xtype.multifunction()
 }
 
 -- Default eq behavior.

@@ -3,7 +3,7 @@ hump.vector
 
 ::
 
-    vector = require "hump.vector"
+    vector=require "hump.vector"
 
 A handy 2D vector class providing most of the things you do with vectors.
 
@@ -19,26 +19,26 @@ You can access the individual coordinates by ``vec.x`` and ``vec.y``.
 **Example**::
 
     function player:update(dt)
-        local delta = vector(0,0)
+        local delta=vector(0,0)
         if love.keyboard.isDown('left') then
-            delta.x = -1
+            delta.x=-1
         elseif love.keyboard.isDown('right') then
-            delta.x =  1
+            delta.x= 1
         end
         if love.keyboard.isDown('up') then
-            delta.y = -1
+            delta.y=-1
         elseif love.keyboard.isDown('down') then
-            delta.y =  1
+            delta.y= 1
         end
         delta:normalizeInplace()
 
-        player.velocity = player.velocity + delta * player.acceleration * dt
+        player.velocity=player.velocity + delta * player.acceleration * dt
 
         if player.velocity:len() > player.max_velocity then
-            player.velocity = player.velocity:normalized() * player.max_velocity
+            player.velocity=player.velocity:normalized() * player.max_velocity
         end
 
-        player.position = player.position + player.velocity * dt
+        player.position=player.position + player.velocity * dt
     end
 
 List of Functions
@@ -75,20 +75,20 @@ Vector arithmetic
 **hump** provides vector arithmetic by implement the corresponding metamethods
 (``__add``, ``__mul``, etc.). Here are the semantics:
 
-``vector + vector = vector``
-    Component wise sum: \\((a,b) + (x,y) = (a+x, b+y)\\)
-``vector - vector = vector``
-    Component wise difference: \\((a,b) - (x,y) = (a-x, b-y)\\)
-``vector * vector = number``
-    Dot product: \\((a,b) \\cdot  (x,y) = a\\cdot x + b\\cdot y\\)
-``number * vector = vector``
-    Scalar multiplication/scaling: \\((a,b) \\cdot  s = (s\\cdot a, s\\cdot b)\\)
-``vector * number = vector``
-    Scalar multiplication/scaling: \\(s \\cdot  (x,y) = (s\\cdot x, s\\cdot y)\\)
-``vector / number = vector``
-    Scalar division: \\((a,b) / s = (a/s, b/s)\\).
-``vector // number = vector``
-    Scalar integer division (only Lua 5.3 and up): \\((a,b) // s = (a//s, b//s)\\).
+``vector + vector=vector``
+    Component wise sum: \\((a,b) + (x,y)=(a+x, b+y)\\)
+``vector - vector=vector``
+    Component wise difference: \\((a,b) - (x,y)=(a-x, b-y)\\)
+``vector * vector=number``
+    Dot product: \\((a,b) \\cdot  (x,y)=a\\cdot x + b\\cdot y\\)
+``number * vector=vector``
+    Scalar multiplication/scaling: \\((a,b) \\cdot  s=(s\\cdot a, s\\cdot b)\\)
+``vector * number=vector``
+    Scalar multiplication/scaling: \\(s \\cdot  (x,y)=(s\\cdot x, s\\cdot y)\\)
+``vector / number=vector``
+    Scalar division: \\((a,b) / s=(a/s, b/s)\\).
+``vector // number=vector``
+    Scalar integer division (only Lua 5.3 and up): \\((a,b) // s=(a//s, b//s)\\).
 
 Common relations are also defined:
 
@@ -102,9 +102,9 @@ Common relations are also defined:
 **Example**::
 
     -- acceleration, player.velocity and player.position are vectors
-    acceleration = vector(0,-9)
-    player.velocity = player.velocity + acceleration * dt
-    player.position = player.position + player.velocity * dt
+    acceleration=vector(0,-9)
+    player.velocity=player.velocity + acceleration * dt
+    player.position=player.position + player.velocity * dt
 
 
 Function Reference
@@ -120,19 +120,19 @@ Create a new vector.
 
 **Examples**::
 
-    a = vector.new(10,10)
+    a=vector.new(10,10)
 
 ::
 
     -- as a shortcut, you can call the module like a function:
-    vector = require "hump.vector"
-    a = vector(10,10)
+    vector=require "hump.vector"
+    a=vector(10,10)
 
 
 .. function:: vector.fromPolar(angle, radius)
 
    :param number angle: Angle of the vector in radians.
-   :param number radius: Length of the vector (optional, default = 1).
+   :param number radius: Length of the vector (optional, default=1).
    :returns: The vector in cartesian coordinates.
 
 
@@ -141,19 +141,19 @@ The ``angle`` is measured against the vector (1,0), i.e., the x axis.
 
 **Examples**::
 
-    a = vector.polar(math.pi,10)
+    a=vector.polar(math.pi,10)
 
 .. function:: vector.randomDirection(len_min, len_max)
 
-   :param number len_min: Minimum length of the vector (optional, default = 1).
-   :param number len_max: Maximum length of the vector (optional, default = ``len_min``).
+   :param number len_min: Minimum length of the vector (optional, default=1).
+   :param number len_max: Maximum length of the vector (optional, default=``len_min``).
    :returns: A vector pointing in a random direction with a random length between ``len_min`` and ``len_max``.
 
 **Examples**::
 
-    rnd = vector.randomDirection()    -- length is 1
-    rnd = vector.randomDirection(100) -- length is 100
-    rnd = vector.randomDirection(1,5) -- length is a random value between 1 and 5
+    rnd=vector.randomDirection()    -- length is 1
+    rnd=vector.randomDirection(100) -- length is 100
+    rnd=vector.randomDirection(1,5) -- length is a random value between 1 and 5
 
 Sample a vector with random direction and (optional) length.
 
@@ -167,7 +167,7 @@ Test whether a variable is a vector.
 **Example**::
 
     if not vector.isvector(v) then
-        v = vector(v,0)
+        v=vector(v,0)
     end
 
 
@@ -179,15 +179,15 @@ Copy a vector.  Assigning a vector to a variable will create a *reference*, so
 when modifying the vector referenced by the new variable would also change the
 old one::
 
-    a = vector(1,1) -- create vector
-    b = a           -- b references a
-    c = a:clone()   -- c is a copy of a
-    b.x = 0         -- changes a,b and c
+    a=vector(1,1) -- create vector
+    b=a           -- b references a
+    c=a:clone()   -- c is a copy of a
+    b.x=0         -- changes a,b and c
     print(a,b,c)    -- prints '(1,0), (1,0), (1,1)'
 
 **Example**::
 
-    copy = original:clone()
+    copy=original:clone()
 
 
 .. function:: vector:unpack()
@@ -199,7 +199,7 @@ Extract coordinates.
 
 **Examples**::
 
-    x,y = pos:unpack()
+    x,y=pos:unpack()
 
 ::
 
@@ -212,7 +212,7 @@ Extract coordinates.
    :returns: Vector whose components are products of the source vectors.
 
 
-Multiplies vectors coordinate wise, i.e. ``result = vector(a.x * b.x, a.y *
+Multiplies vectors coordinate wise, i.e. ``result=vector(a.x * b.x, a.y *
 b.y)``.
 
 Does not change either argument vectors, but creates a new one.
@@ -220,7 +220,7 @@ Does not change either argument vectors, but creates a new one.
 **Example**::
 
     -- scale with different magnitudes
-    scaled = original:permul(vector(1,1.5))
+    scaled=original:permul(vector(1,1.5))
 
 
 .. function:: vector:len()
@@ -232,7 +232,7 @@ Get length of the vector, i.e. ``math.sqrt(vec.x * vec.x + vec.y * vec.y)``.
 
 **Example**::
 
-    distance = (a - b):len()
+    distance=(a - b):len()
 
 
 .. function:: vector:toPolar()
@@ -244,8 +244,8 @@ Convert the vector to polar coordinates, i.e., the angle and the radius/lenth.
 **Example**::
 
    -- complex multiplication
-   p, q = a:toPolar(), b:toPolar()
-   c = vector(p.x+q.x, p.y*q.y)
+   p, q=a:toPolar(), b:toPolar()
+   c=vector(p.x+q.x, p.y*q.y)
 
 
 .. function:: vector:len2()
@@ -258,11 +258,11 @@ Get squared length of the vector, i.e. ``vec.x * vec.x + vec.y * vec.y``.
 **Example**::
 
     -- get closest vertex to a given vector
-    closest, dsq = vertices[1], (pos - vertices[1]):len2()
-    for i = 2,#vertices do
-        local temp = (pos - vertices[i]):len2()
+    closest, dsq=vertices[1], (pos - vertices[1]):len2()
+    for i=2,#vertices do
+        local temp=(pos - vertices[i]):len2()
         if temp < dsq then
-            closest, dsq = vertices[i], temp
+            closest, dsq=vertices[i], temp
         end
     end
 
@@ -279,11 +279,11 @@ Get distance of two vectors. The same as ``(a - b):len()``.
 
     -- get closest vertex to a given vector
     -- slightly slower than the example using len2()
-    closest, dist = vertices[1], pos:dist(vertices[1])
-    for i = 2,#vertices do
-        local temp = pos:dist(vertices[i])
+    closest, dist=vertices[1], pos:dist(vertices[1])
+    for i=2,#vertices do
+        local temp=pos:dist(vertices[i])
         if temp < dist then
-            closest, dist = vertices[i], temp
+            closest, dist=vertices[i], temp
         end
     end
 
@@ -300,11 +300,11 @@ Get squared distance of two vectors. The same as ``(a - b):len2()``.
 
     -- get closest vertex to a given vector
     -- slightly faster than the example using len2()
-    closest, dsq = vertices[1], pos:dist2(vertices[1])
-    for i = 2,#vertices do
-        local temp = pos:dist2(vertices[i])
+    closest, dsq=vertices[1], pos:dist2(vertices[1])
+    for i=2,#vertices do
+        local temp=pos:dist2(vertices[i])
         if temp < dsq then
-            closest, dsq = vertices[i], temp
+            closest, dsq=vertices[i], temp
         end
     end
 
@@ -321,7 +321,7 @@ Does not change the input vector, but creates a new vector.
 
 **Example**::
 
-    direction = velocity:normalized()
+    direction=velocity:normalized()
 
 
 .. function:: vector:normalizeInplace()
@@ -337,7 +337,7 @@ intermediate results.
 
 **Example**::
 
-    normal = (b - a):perpendicular():normalizeInplace()
+    normal=(b - a):perpendicular():normalizeInplace()
 
 
 .. function:: vector:rotated(angle)
@@ -356,10 +356,10 @@ Does not change the input vector, but creates a new vector.
 **Example**::
 
     -- approximate a circle
-    circle = {}
-    for i = 1,30 do
-        local phi = 2 * math.pi * i / 30
-        circle[#circle+1] = vector(0,1):rotated(phi)
+    circle={}
+    for i=1,30 do
+        local phi=2 * math.pi * i / 30
+        circle[#circle+1]=vector(0,1):rotated(phi)
     end
 
 .. function:: vector:rotateInplace(angle)
@@ -391,7 +391,7 @@ Quick rotation by 90°. Creates a new vector. The same (but faster) as
 
 **Example**::
 
-    normal = (b - a):perpendicular():normalizeInplace()
+    normal=(b - a):perpendicular():normalizeInplace()
 
 
 
@@ -408,7 +408,7 @@ Project vector onto another vector:
 
 **Example**::
 
-    velocity_component = velocity:projectOn(axis)
+    velocity_component=velocity:projectOn(axis)
 
 
 
@@ -425,7 +425,7 @@ Mirrors vector on the axis defined by the other vector:
 
 **Example**::
 
-    deflected_velocity = ball.velocity:mirrorOn(surface_normal)
+    deflected_velocity=ball.velocity:mirrorOn(surface_normal)
 
 
 .. function:: vector:cross(other)
@@ -439,7 +439,7 @@ by both vectors.
 
 **Example**::
 
-    parallelogram_area = a:cross(b)
+    parallelogram_area=a:cross(b)
 
 
 .. function:: vector:angleTo(other)
@@ -454,7 +454,7 @@ system.
 
 **Example**::
 
-    lean = self.upvector:angleTo(vector(0,1))
+    lean=self.upvector:angleTo(vector(0,1))
     if lean > .1 then self:fallOver() end
 
 .. function:: vector:trimmed(max_length)
@@ -470,8 +470,8 @@ Does not change the input vector, but creates a new vector.
 
 **Example**::
 
-    ship.velocity = ship.force * ship.mass * dt
-    ship.velocity = ship.velocity:trimmed(299792458)
+    ship.velocity=ship.force * ship.mass * dt
+    ship.velocity=ship.velocity:trimmed(299792458)
 
 
 .. function:: vector:trimInplace(max_length)
@@ -489,4 +489,4 @@ direction as the source vector, but has a magnitude smaller or equal to
 
 **Example**::
 
-    ship.velocity = (ship.velocity + ship.force * ship.mass * dt):trimInplace(299792458)
+    ship.velocity=(ship.velocity + ship.force * ship.mass * dt):trimInplace(299792458)

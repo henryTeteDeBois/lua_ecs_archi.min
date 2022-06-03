@@ -3,7 +3,7 @@ hump.timer
 
 ::
 
-    Timer = require "hump.timer"
+    Timer=require "hump.timer"
 
 hump.timer offers a simple interface to schedule the execution of functions. It
 is possible to run functions *after* and *for* some amount of time. For
@@ -62,7 +62,7 @@ the global timer. Likewise, the global timer does not affect timer instances.
 
 **Example**::
 
-    menuTimer = Timer.new()
+    menuTimer=Timer.new()
 
 
 .. function:: Timer.after(delay, func)
@@ -86,8 +86,8 @@ periodic behavior (see the example).
 **Examples**::
 
     -- grant the player 5 seconds of immortality
-    player.isInvincible = true
-    Timer.after(5, function() player.isInvincible = false end)
+    player.isInvincible=true
+    Timer.after(5, function() player.isInvincible=false end)
 
 ::
 
@@ -123,9 +123,9 @@ wait is: ``wait(delay)``.
 
     -- useful for splash screens
     Timer.script(function(wait)
-        Timer.tween(0.5, splash.pos, {x = 300}, 'in-out-quad')
+        Timer.tween(0.5, splash.pos, {x=300}, 'in-out-quad')
         wait(5) -- show the splash for 5 seconds
-        Timer.tween(0.5, slpash.pos, {x = 800}, 'in-out-quad')
+        Timer.tween(0.5, slpash.pos, {x=800}, 'in-out-quad')
     end)
 
 ::
@@ -142,26 +142,26 @@ wait is: ``wait(delay)``.
 
     -- jumping with timer.script
     self.timers:script(function(wait)
-        local w = 1/12
-        self.jumping = true
-        Timer.tween(w*2, self, {z = -8}, "out-cubic", function()
-            Timer.tween(w*2, self, {z = 0},"in-cubic")
+        local w=1/12
+        self.jumping=true
+        Timer.tween(w*2, self, {z=-8}, "out-cubic", function()
+            Timer.tween(w*2, self, {z=0},"in-cubic")
         end)
 
-        self.quad = self.quads.jump[1]
+        self.quad=self.quads.jump[1]
         wait(w)
 
-        self.quad = self.quads.jump[2]
+        self.quad=self.quads.jump[2]
         wait(w)
 
-        self.quad = self.quads.jump[3]
+        self.quad=self.quads.jump[3]
         wait(w)
 
-        self.quad = self.quads.jump[4]
+        self.quad=self.quads.jump[4]
         wait(w)
 
-        self.jumping = false
-        self.z = 0
+        self.jumping=false
+        self.z=0
     end)
 
 
@@ -223,7 +223,7 @@ seconds have passed.
 ::
 
     -- shake the camera for one second
-    local orig_x, orig_y = camera:position()
+    local orig_x, orig_y=camera:position()
     Timer.during(1, function()
         camera:lookAt(orig_x + math.random(-2,2), orig_y + math.random(-2,2))
     end, function()
@@ -233,16 +233,16 @@ seconds have passed.
 
 ::
 
-    player.isInvincible = true
+    player.isInvincible=true
     -- flash player for 3 seconds
-    local t = 0
+    local t=0
     player.timer:during(3, function(dt)
-        t = t + dt
-        player.visible = (t % .2) < .1
+        t=t + dt
+        player.visible=(t % .2) < .1
     end, function()
         -- make sure the player is visible after three seconds
-        player.visible = true
-        player.isInvincible = false
+        player.visible=true
+        player.isInvincible=false
     end)
 
 
@@ -257,7 +257,7 @@ Prevent a timer from being executed in the future.
     function tick()
         print('tick... tock...')
     end
-    handle = Timer.every(1, tick)
+    handle=Timer.every(1, tick)
     -- later
     Timer.cancel(handle) -- NOT: Timer.cancel(tick)
 
@@ -267,7 +267,7 @@ Prevent a timer from being executed in the future.
     function tick()
         print('tick... tock...')
     end
-    handle = menuTimer:every(1, tick)
+    handle=menuTimer:every(1, tick)
     -- later
     menuTimer:cancel(handle)
 
@@ -336,7 +336,7 @@ To see which tweening methods hump offers, :ref:`see below <tweening-methods>`.
 **Examples**::
 
     function love.load()
-        color = {0, 0, 0}
+        color={0, 0, 0}
         Timer.tween(10, color, {255, 255, 255}, 'in-out-quad')
     end
 
@@ -351,11 +351,11 @@ To see which tweening methods hump offers, :ref:`see below <tweening-methods>`.
 ::
 
     function love.load()
-        circle = {rad = 10, pos = {x = 400, y = 300}}
+        circle={rad=10, pos={x=400, y=300}}
         -- multiple tweens can work on the same subject
         -- and nested values can be tweened, too
-        Timer.tween(5, circle, {rad = 50}, 'in-out-quad')
-        Timer.tween(2, circle, {pos = {y = 550}}, 'out-bounce')
+        Timer.tween(5, circle, {rad=50}, 'in-out-quad')
+        Timer.tween(2, circle, {pos={y=550}}, 'out-bounce')
     end
 
     function love.update(dt)
@@ -371,20 +371,20 @@ To see which tweening methods hump offers, :ref:`see below <tweening-methods>`.
     function love.load()
         -- repeated tweening
 
-        circle = {rad = 10, x = 100, y = 100}
+        circle={rad=10, x=100, y=100}
         local grow, shrink, move_down, move_up
-        grow = function()
-            Timer.tween(1, circle, {rad = 50}, 'in-out-quad', shrink)
+        grow=function()
+            Timer.tween(1, circle, {rad=50}, 'in-out-quad', shrink)
         end
-        shrink = function()
-            Timer.tween(2, circle, {rad = 10}, 'in-out-quad', grow)
+        shrink=function()
+            Timer.tween(2, circle, {rad=10}, 'in-out-quad', grow)
         end
 
-        move_down = function()
-            Timer.tween(3, circle, {x = 700, y = 500}, 'bounce', move_up)
+        move_down=function()
+            Timer.tween(3, circle, {x=700, y=500}, 'bounce', move_up)
         end
-        move_up = function()
-            Timer.tween(5, circle, {x = 200, y = 200}, 'out-elastic', move_down)
+        move_up=function()
+            Timer.tween(5, circle, {x=200, y=200}, 'out-elastic', move_down)
         end
 
         grow()
@@ -410,13 +410,13 @@ At the core of tweening lie interpolation methods. These methods define how the
 output should look depending on how much time has passed. For example, consider
 the following tween::
 
-    -- now: player.x = 0, player.y = 0
-    Timer.tween(2, player, {x = 2})
-    Timer.tween(4, player, {y = 8})
+    -- now: player.x=0, player.y=0
+    Timer.tween(2, player, {x=2})
+    Timer.tween(4, player, {y=8})
 
 At the beginning of the tweens (no time passed), the interpolation method would
-place the player at ``x = 0, y = 0``. After one second, the player should be at
-``x = 1, y = 2``, and after two seconds the output is ``x = 2, y = 4``.
+place the player at ``x=0, y=0``. After one second, the player should be at
+``x=1, y=2``, and after two seconds the output is ``x=2, y=4``.
 
 The actual duration of and time since starting the tween is not important, only
 the fraction of the two. Similarly, the starting value and output are not
@@ -464,15 +464,15 @@ Custom interpolators
 
 You can add custom interpolation methods by adding them to the `tween` table::
 
-    Timer.tween.sqrt = function(t) return math.sqrt(t) end
-    -- or just Timer.tween.sqrt = math.sqrt
+    Timer.tween.sqrt=function(t) return math.sqrt(t) end
+    -- or just Timer.tween.sqrt=math.sqrt
 
 Access the your method like you would the predefined ones. You can even use the
 modyfing prefixes::
 
-    Timer.tween(5, circle, {radius = 50}, 'in-out-sqrt')
+    Timer.tween(5, circle, {radius=50}, 'in-out-sqrt')
 
 You can also invert and chain functions::
 
-    outsqrt = Timer.tween.out(math.sqrt)
-    inoutsqrt = Timer.tween.chain(math.sqrt, outsqrt)
+    outsqrt=Timer.tween.out(math.sqrt)
+    inoutsqrt=Timer.tween.chain(math.sqrt, outsqrt)
