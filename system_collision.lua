@@ -29,7 +29,14 @@ function S_Collision:process(e, dt)
         end
     end
 
-    c_b.colls = colls
+    --== check on ground
+    local items,len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h, c_b.w, 1, function(item)
+        return Xtype.is(item, E_Tile) and  item.type == Tl.Type.Wall
+    end)
+    if len == 0 then
+        c_b.on_ground=false
+    end
+    c_b.colls=colls
 
     e.c_b.x=goal_x
     e.c_b.y=goal_y

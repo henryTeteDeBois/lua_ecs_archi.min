@@ -25,8 +25,9 @@ C_Mario_Controls=Class('C_Mario_Controls', Comp)
 function C_Mario_Controls:__construct(e)
     Comp.__construct(self, e)
     --==
-    self.state='walk' -- 'walk' | 'run'
+    self.state='walk' -- 'walk' | 'run' | 'jump'
     -- self.__acc=nil
     self.old_r=false
+    self.vy_tot = 0
 end
 

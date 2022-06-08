@@ -1,5 +1,5 @@
 {
-    "pixelbyte.love2d.debug": true,
+    "pixelbyte.love2d.debug": false,
     "Lua.diagnostics.globals": [
         "love",
         "class_commons"
@@ -7,5 +7,9 @@
     "Lua.diagnostics.disable": [
         "undefined-global"
     ],
-    "Lua.workspace.checkThirdParty": false
+    "Lua.workspace.checkThirdParty": false,
+    "Lua.runtime.version": "LuaJIT",
+    "Lua.workspace.library": [
+        "${3rd}/love2d/library"
+    ]
 }

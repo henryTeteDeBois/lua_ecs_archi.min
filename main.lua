@@ -1,11 +1,9 @@
 --===================================#
-
 -- config
 love.graphics.setDefaultFilter("nearest", "nearest");
 love.filesystem.setRequirePath('lib/?.lua;lib/hump/?.lua;')
 io.stdout:setvbuf("no")
 --===================================#
-
 -- libs
 V2=require 'hump.vector';
 Bump=require 'bump';
@@ -15,9 +13,7 @@ Signal=require 'hump.signal';
 Class=(require 'luaoop').class
 Gamera=require 'gamera'
 Xtype=require "Xtype"
-
 --===================================#
-
 -- GAME
 require 'component'
 require 'component_body'

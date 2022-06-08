@@ -18,3 +18,11 @@ function C_Body:__construct(e, x, y, w, h)
     --==
     GAME.bump_world:add(e, self.x, self.y, self.w, self.h)
 end
+
+function C_Body:bot()
+    return self.y+self.h
+end
+
+function C_Body:right()
+    return self.x+self.w
+end
