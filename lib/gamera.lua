@@ -254,7 +254,7 @@ function gamera:update(dt)
   elseif (self.state == 'follow') then
 	  self:setPosition( math.floor(self.follow:mid_x()), math.floor(self.follow:bot()) )
     -- if (self.move) then
-    --   print(self.x, self.y, self.move.x, self.move.y)
+    -- --print(self.x, self.y, self.move.x, self.move.y)
       
     -- end
 

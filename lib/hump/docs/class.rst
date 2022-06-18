@@ -82,7 +82,7 @@ The name of the variable that holds the module can be used as a shortcut to
     garfield=Feline(.7, 45)
     felix=Feline(.8, 12)
     
-    print("Garfield: " .. garfield:stats(), "Felix: " .. felix:stats())
+  --print("Garfield: " .. garfield:stats(), "Felix: " .. felix:stats())
 
 ::
 
@@ -101,7 +101,7 @@ The name of the variable that holds the module can be used as a shortcut to
     end
     
     garfield=Feline(.7, 45)
-    print(Feline, garfield)
+  --print(Feline, garfield)
 
 ::
 
@@ -132,13 +132,13 @@ The name of the variable that holds the module can be used as a shortcut to
     A=Class{ foo='foo' } -- foo is a class attribute/static member
     
     one, two, three=A(), A(), A()
-    print(one.foo, two.foo, three.foo) --> prints 'foo    foo    foo'
+  --print(one.foo, two.foo, three.foo) --> prints 'foo    foo    foo'
     
     one.foo='bar' -- overwrite/specify for instance `one' only
-    print(one.foo, two.foo, three.foo) --> prints 'bar    foo    foo'
+  --print(one.foo, two.foo, three.foo) --> prints 'bar    foo    foo'
     
     A.foo='baz' -- overwrite for all instances without specification
-    print(one.foo, two.foo, three.foo) --> prints 'bar    baz    baz'
+  --print(one.foo, two.foo, three.foo) --> prints 'bar    baz    baz'
 
 
 .. function:: class.init(object, ...)
@@ -182,7 +182,7 @@ parent class(es) portions of the object.
         end
     }
     
-    print( Rectangle(2,4) ) -- prints 'width=2, height=4, area=8'
+  --print( Rectangle(2,4) ) -- prints 'width=2, height=4, area=8'
 
 
 .. function:: Class:include(other)
@@ -254,12 +254,12 @@ over to the subclass.
     Class.include(b, a) -- copy values from a to b
                         -- note that neither a nor b are hump classes!
 
-    print(a.foo, b.foo) -- prints 'bar    nothing to see here...'
+  --print(a.foo, b.foo) -- prints 'bar    nothing to see here...'
     
     b.baz() -- prints 'baz'
     
     b.bar.one=10 -- changes only values in b
-    print(a.bar.one, b.bar.one) -- prints '1    10'
+  --print(a.bar.one, b.bar.one) -- prints '1    10'
 
 
 .. function:: class:clone()
@@ -281,13 +281,13 @@ Create a clone/deep copy of the class.
     
     a=point:clone()
     a.x, a.y=10, 10
-    print(a.x, a.y) --> prints '10    10'
+  --print(a.x, a.y) --> prints '10    10'
     
     b=point:clone()
-    print(b.x, b.y) --> prints '0    0'
+  --print(b.x, b.y) --> prints '0    0'
     
     c=a:clone()
-    print(c.x, c.y) --> prints '10    10'
+  --print(c.x, c.y) --> prints '10    10'
 
 ::
 
@@ -302,7 +302,7 @@ Create a clone/deep copy of the class.
     
     b.baz() -- prints 'baz'
     b.bar.one=10
-    print(a.bar.one, b.bar.one) -- prints '1    10'
+  --print(a.bar.one, b.bar.one) -- prints '1    10'
 
 
 
@@ -340,7 +340,7 @@ beware that this won't affect subclasses::
     function A:foo() print('bar') end
     
     function A:__index(key)
-        print(key)
+      --print(key)
         return rawget(A, key)
     end
     

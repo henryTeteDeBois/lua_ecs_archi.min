@@ -2,8 +2,10 @@
     "pixelbyte.love2d.debug": false,
     "Lua.diagnostics.globals": [
         "love",
-        "class_commons"
+        "class_commons",
+        "S_Physic"
     ],
+    
     "Lua.diagnostics.disable": [
         "undefined-global"
     ],
@@ -11,5 +13,5 @@
     "Lua.runtime.version": "LuaJIT",
     "Lua.workspace.library": [
         "${3rd}/love2d/library"
-    ]
+    ],
 }

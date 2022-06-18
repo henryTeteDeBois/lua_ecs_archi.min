@@ -47,7 +47,7 @@ end
 
 local function assertType(desiredType, value, name)
   if type(value) ~= desiredType then
-    error(name .. ' must be a ' .. desiredType .. ', but was ' .. tostring(value) .. '(a ' .. type(value) .. ')')
+    -- error(name .. ' must be a ' .. desiredType .. ', but was ' .. tostring(value) .. '(a ' .. type(value) .. ')')
   end
 end
 

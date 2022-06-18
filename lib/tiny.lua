@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2016 Calvin Rose
+Copyright (c) 20Tl.Dim Calvin Rose
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -19,7 +19,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --- @module tiny-ecs
 -- @author Calvin Rose
 -- @license MIT
--- @copyright 2016
+-- @copyright 20Tl.Dim
 local tiny={}
 
 -- Local versions of standard lua functions
@@ -69,8 +69,8 @@ local tiny_removeSystem
 --        velocity={3, 3}
 --    }
 --
---    print(f1(nil, e1), f1(nil, e2), f1(nil, e3)) -- prints true, false, false
---    print(f2(nil, e1), f2(nil, e2), f2(nil, e3)) -- prints true, true, true
+--  --print(f1(nil, e1), f1(nil, e2), f1(nil, e3)) -- prints true, false, false
+--  --print(f2(nil, e1), f2(nil, e2), f2(nil, e3)) -- prints true, true, true
 --
 -- Filters can also be passed as arguments to other Filter constructors. This is
 -- a powerful way to create complex, custom Filters that select a very specific

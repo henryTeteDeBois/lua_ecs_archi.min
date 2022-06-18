@@ -89,7 +89,7 @@ Useful for debugging.
 
 **Example**::
 
-    print(vector.str(love.mouse.getPosition()))
+  --print(vector.str(love.mouse.getPosition()))
 
 
 .. function:: vector.fromPolar(angle, radius)

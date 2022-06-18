@@ -112,11 +112,11 @@ wait is: ``wait(delay)``.
 **Examples**::
 
     Timer.script(function(wait)
-        print("Now")
+      --print("Now")
         wait(1)
-        print("After one second")
+      --print("After one second")
         wait(1)
-        print("Bye!")
+      --print("Bye!")
     end)
 
 ::
@@ -255,7 +255,7 @@ Prevent a timer from being executed in the future.
 **Examples**::
 
     function tick()
-        print('tick... tock...')
+      --print('tick... tock...')
     end
     handle=Timer.every(1, tick)
     -- later
@@ -265,7 +265,7 @@ Prevent a timer from being executed in the future.
 
     -- using a timer instance
     function tick()
-        print('tick... tock...')
+      --print('tick... tock...')
     end
     handle=menuTimer:every(1, tick)
     -- later

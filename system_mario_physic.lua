@@ -106,7 +106,7 @@ function S_Mario_Physic:process(e, dt)
         end
 
         if c_mc.state == 'jump' then
-            if abs_vx < 16 then
+            if abs_vx < Tl.Dim then
                 vy=-240
                 c_mc.acc=IDLE_JMP_ACC
             elseif abs_vx <= 40 then
