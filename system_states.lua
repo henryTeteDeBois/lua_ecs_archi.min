@@ -14,7 +14,10 @@ function S_StateMachineHandler:process(e, dt)
     local new = c_sm.__new_state
 
     --== only once
-    if cur and cur.on_enter then cur.on_enter=fase end
+    if cur and cur.on_enter then
+        print('on enter=false', cur)
+         cur.on_enter=false 
+    end
     -- if cur and cur.on_exit then cur.on_exit=fase end
 
     --== state change
@@ -35,7 +38,7 @@ function S_StateMachineHandler:process(e, dt)
                 new.on_update=true
                 new.on_exit=false
             end
-
+            print('new state: ',c_sm.__cur_state,' => ',c_sm.__new_state)
             c_sm.__cur_state = c_sm.__new_state
         end
     end
@@ -60,13 +63,110 @@ function S_HeroWanderSt:process(e, dt)
 
         if state.on_enter then
             e:on('c_gravity', 'c_move_hrz')
-            -- self.c_move_hrz:settings(Settings.Move_Hrz.Hero_Wander)
+            e.c_move_hrz:preset(Preset.C_Move_Hrz.C_Wander_Stance)
         end
 
         if state.on_update then
         end
 
         if state.on_exit then            
+        end
+    end
+end
+
+--===================================#
+--
+
+S_HangPlatformStance=Tiny.processingSystem()
+S_HangPlatformStance.active=false;
+
+function S_HangPlatformStance:filter(e)
+    return e:has_active('c_b', 'c_state_machine', 'c_hang_platform_stance')
+end
+
+function S_HangPlatformStance:process(e, dt)
+    local c_b=e.c_b
+    local c_sm=e.c_state_machine
+
+    if c_b.hit_ground then
+        e.c_hang_platform_stance.can_enter=true
+    end
+
+    if c_sm:is(C_HangPlatformStance) then
+        local c_state=c_sm:get()
+        local args = c_state.args
+        local coll = args.coll
+        local e_tl = c_state.args.coll.other
+
+        if c_state.on_enter then
+            e:off('c_gravity')
+            e.c_hang_platform_stance.can_enter = false
+        
+            e.c_b.y=e_tl.c_b.y
+            GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
+
+            e.c_move_hrz:preset(Preset.C_Move_Hrz.C_Hang_Platform_Stance)
+        end
+
+        if c_state.on_update then
+            local pad_d=love.keyboard.isDown('down')
+            local pad_u=love.keyboard.isDown('up')
+
+            if pad_d then
+                c_sm:set(e.c_hero_wander_st)
+            elseif pad_u then
+                c_sm:set(e.c_climb_platform_act, {coll=coll})
+            end
+
+            local tl_platf, _=GAME.bump_world:queryRect(c_b:left(), c_b:top(), c_b.w, 1, function(item)
+                local c_tile=item.c_tile
+                return Xtype.is(item, E_Tile) and c_tile:has_prop(Tl.Prop.Platform)
+            end)
+            if #tl_platf==0 then
+                c_sm:set(e.c_hero_wander_st)
+            end
+        end
+
+        if c_state.on_exit then
+        end
+    end
+end
+
+
+--===================================#
+--
+
+S_ClimbPlatformAct=Tiny.processingSystem()
+S_ClimbPlatformAct.active=false;
+
+function S_ClimbPlatformAct:filter(e)
+    return e:has_active('c_b', 'c_state_machine', 'c_climb_platform_act')
+end
+
+function S_ClimbPlatformAct:process(e, dt)
+    local c_b=e.c_b
+    local c_sm=e.c_state_machine
+
+    if c_sm:is(C_ClimbPlatformAct) then
+        local state=c_sm:get()
+        local args = state.args
+        local coll = args.coll
+        local e_tl = state.args.coll.other
+
+        if state.on_enter then
+            e:off('c_gravity', 'c_move_hrz')
+            e.c_b.vx=0
+        end
+
+        if state.on_update then
+            if e.c_anim.is_over then
+                c_sm:set(e.c_hero_wander_st)
+            end
+        end
+
+        if state.on_exit then
+            e.c_b.y=e_tl.c_b:top()-e.c_b.h
+            GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
         end
     end
 end
@@ -85,72 +185,34 @@ function S_ClimbCornerAct:process(e, dt)
     local c_b=e.c_b
     local c_sm=e.c_state_machine
 
-    if c_sm:is(C_HeroWanderSt) then
+    if c_sm:is(C_ClimbCornerAct) then
         local state=c_sm:get()
+        local args = state.args
+        local coll = args.coll
+        local e_tl = state.args.coll.other
 
         if state.on_enter then
+            e:off('c_gravity', 'c_move_hrz')
+            e.c_b.y=e_tl.c_b.y
+            GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
         end
 
         if state.on_update then
+            if e.c_anim.is_over then
+                c_sm:set(e.c_hero_wander_st)
+            end
         end
 
         if state.on_exit then
-        end
-    end
-end
 
---===================================#
---
+            if coll.normal.x == -1 then
+                e.c_b.x=e_tl.c_b:left()
+            else
+                e.c_b.x=e_tl.c_b:right()-e.c_b.w
+            end
 
-S_HangOnLadderSt=Tiny.processingSystem()
-S_HangOnLadderSt.active=false;
-
-function S_HangOnLadderSt:filter(e)
-    return e:has_active('c_b', 'c_state_machine', 'c_hang_on_ladder_st')
-end
-
-function S_HangOnLadderSt:process(e, dt)
-    local c_b=e.c_b
-    local c_sm=e.c_state_machine
-
-    if c_sm:is(C_HeroWanderSt) then
-        local state=c_sm:get()
-
-        if state.on_enter then
-        end
-
-        if state.on_update then
-        end
-
-        if state.on_exit then            
-        end
-    end
-end
-
---===================================#
---
-
-S_HangOnPlatfSt=Tiny.processingSystem()
-S_HangOnPlatfSt.active=false;
-
-function S_HangOnPlatfSt:filter(e)
-    return e:has_active('c_b', 'c_state_machine', 'c_hang_on_platf_st')
-end
-
-function S_HangOnPlatfSt:process(e, dt)
-    local c_b=e.c_b
-    local c_sm=e.c_state_machine
-
-    if c_sm:is(C_HeroWanderSt) then
-        local state=c_sm:get()
-
-        if state.on_enter then
-        end
-
-        if state.on_update then
-        end
-
-        if state.on_exit then            
+            e.c_b.y=e_tl.c_b:top()-e.c_b.h
+            GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
         end
     end
 end

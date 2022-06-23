@@ -84,9 +84,14 @@ function Map:get_tl_by_index(ix, iy)
 end
 
 function Map:is_tl_corner_wall(ix, iy, dir) --== dir=1 or -1
+    local t = self:get_tl_by_index(ix, iy)
     local t_b = self:get_tl_by_index(ix-dir, iy)
     local t_u = self:get_tl_by_index(ix, iy-1)
     local t_bu = self:get_tl_by_index(ix-dir, iy-1)
 
-    return t_b and t_u and t_bu and t_b.c_tile.props==0 and t_u.c_tile.props==0 and t_bu.c_tile.props==0
+    if not t or not t_b or not t_u or not t_bu then
+        return false
+    end
+
+    return  t.c_tile:has_prop(Tl.Prop.Wall) and t_b.c_tile.props==0 and t_u.c_tile.props==0 and t_bu.c_tile.props==0
 end

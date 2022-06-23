@@ -10,8 +10,8 @@ function StateComp:__construct(e)
     self.on_update=false
     self.on_exit=false
     --==
-    self.can_enter=false
-    self.can_exit=false
+    self.is_entering_ok=false
+    self.is_exiting_ok=false
     --==
     self.args={}
 end
@@ -56,9 +56,9 @@ end
 --===================================#
 --
 
-C_ClimbCornerState=Class('C_ClimbCornerState', StateComp)
+C_ClimbCornerAct=Class('C_ClimbCornerAct', StateComp)
 
-function C_ClimbCornerState:__construct(e)
+function C_ClimbCornerAct:__construct(e)
     StateComp.__construct(self, e)
     --==
     self.is_climbing=false
@@ -67,12 +67,22 @@ end
 --===================================#
 --
 
-C_HangPlatformState=Class('C_HangPlatformState', StateComp)
+C_HangPlatformStance=Class('C_HangPlatformStance', StateComp)
 
-function C_HangPlatformState:__construct(e)
+function C_HangPlatformStance:__construct(e)
     StateComp.__construct(self, e)
     --==
     self.is_hanging=false
+end
+
+--===================================#
+--
+
+C_ClimbPlatformAct=Class('C_ClimbPlatformAct', StateComp)
+
+function C_ClimbPlatformAct:__construct(e)
+    StateComp.__construct(self, e)
+    --==
 end
 
 --===================================#
@@ -89,9 +99,9 @@ end
 --===================================#
 --
 
-C_ClimbLadderState=Class('C_ClimbLadderState', StateComp)
+C_ClimbLadderStance=Class('C_ClimbLadderStance', StateComp)
 
-function C_ClimbLadderState:__construct(e)
+function C_ClimbLadderStance:__construct(e)
     StateComp.__construct(self, e)
       --==
       self.is_hanging=false

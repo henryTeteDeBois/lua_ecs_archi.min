@@ -17,6 +17,15 @@ function Comp:is_on()
     return self.active
 end
 
+function Comp:preset(key_value_table) -- key_value
+    for k,v in pairs(key_value_table) do
+        if self[k] ~= nil then
+            self[k]=v
+        end
+    end
+    
+end
+
 --===================================#
 --
 
@@ -73,6 +82,9 @@ C_Gravity=Class('C_Gravity', Comp)
 function C_Gravity:__construct(e)
     Comp.__construct(self, e)
     --==
+    self.acc=Tl.Dim*30
+    self.min=0
+    self.max=Tl.Dim*13
 end
 
 --===================================#
@@ -83,6 +95,10 @@ C_MoveHrz=Class('C_MoveHrz', Comp)
 function C_MoveHrz:__construct(e)
     Comp.__construct(self, e)
     --==
+    self.acc=Tl.Dim*70
+    self.dec=Tl.Dim*40
+    self.max = Tl.Dim*5
+    self.min = Tl.Dim*1
 end
 
 --===================================#
@@ -108,14 +124,28 @@ function C_Anim:__construct(e, atlas)
     self.timer=0
     self.ox=0.5 -- ratio
     self.oy=1 -- ratio
-    self.dir=1 -- 1 or -1
+    self.dir=-1 -- 1 or -1
+    self.is_over=false
+    self.is_paused=false
 end
 
 function C_Anim:set(name, ox, oy)
     self.props=self.atlas[name]
-    self.ox=ox or self.ox
-    self.oy=oy or self.oy
+    self.ox=ox or 0.5
+    self.oy=oy or 1
+    self.is_over=false
+    self.timer=0
+    self.is_paused=false
 end
+
+function C_Anim:pause()
+    self.is_paused=true
+end
+
+function C_Anim:play()
+    self.is_paused=false
+end
+
 
 
 

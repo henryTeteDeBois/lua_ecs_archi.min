@@ -9,27 +9,37 @@ function S_Animate:process(e, dt)
     local c_b=e.c_b
     local c_anim=e.c_anim
     local props=c_anim.props
+    local duration=0
 
     if not props then return end
 
-    local duration=props.duration
+    duration=props.duration
+    if not c_anim.is_paused then
 
-    c_anim.timer=c_anim.timer+dt
-    if c_anim.timer > duration then
-        if props.loop then
-            c_anim.timer=c_anim.timer-duration
-        else
-            c_anim.timer=duration
+        c_anim.timer=c_anim.timer+dt
+        if c_anim.timer > duration then
+            if props.__loop then
+                c_anim.timer=c_anim.timer-duration
+            else
+                c_anim.is_over=true
+                c_anim.timer=duration
+            end
         end
     end
 
     local cur_frame_i = math.ceil(c_anim.timer / (duration / #props.frames))
+
+    if c_anim.timer == 0 then
+        cur_frame_i=1
+    end
     local cur_frame=props.frames[cur_frame_i];
     local x = c_b.x+c_b.w*c_anim.ox
     local y = c_b.y+c_b.h*c_anim.oy
     local sx = c_anim.dir
 
-    love.graphics.draw(props.spritesheet, cur_frame.quad, x, y, 0, sx, 1, cur_frame.ox, cur_frame.h)
+    if cur_frame then
+        love.graphics.draw(props.spritesheet, cur_frame.quad, x, y, 0, sx, 1, cur_frame.ox, cur_frame.h)        
+    end
 end
 
 --===================================#
@@ -45,17 +55,51 @@ end
 function S_Animate_Hero_Atlas:process(e, dt)
     local c_b = e.c_b
     local c_anim = e.c_anim
+    local c_sm = e.c_state_machine
 
-    if c_b.on_ground then
+    local state = c_sm:get()
+    local args = state.args
 
-        if love.keyboard.isDown('left') then
-            c_anim:set('run')
-            c_anim.dir=-1
-        elseif love.keyboard.isDown('right') then
-            c_anim:set('run')
-            c_anim.dir=1
-        else
-            c_anim:set('idle')
+    if c_sm:is(C_ClimbCornerAct) then
+        local coll = args.coll
+
+        if state.on_enter then
+            
+            if c_b.vx > 0 then
+                c_anim.dir = 1
+            elseif c_b.vx < 0 then
+                c_anim.dir = -1
+            end
+
+            if coll.normal.x == -1 then
+                c_anim:set('climb_corner', 1.05, 0.95)
+            else
+                c_anim:set('climb_corner', -0.05, 0.95)
+            end
         end
+    elseif c_sm:is(C_HangPlatformStance) then
+        if state.on_enter then
+            c_anim:set('platf_move')
+        end
+        if state.on_update then
+            if c_b.vx > 0 then
+                c_anim.dir = 1
+            elseif c_b.vx < 0 then
+                c_anim.dir = -1
+            end
+                print( c_b.vx)
+            if c_b.vx ~= 0 then
+                c_anim:play()
+            else
+                c_anim:pause()
+            end
+        end
+    elseif c_sm:is(C_ClimbPlatformAct) then
+        if state.on_enter then
+            c_anim:set('platf_climb')
+        end
+    elseif c_sm:is(C_HeroWanderSt) then
+        c_anim:set('idle')
     end
+
 end

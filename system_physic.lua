@@ -8,11 +8,6 @@ end
 function S_Physic:process(e, dt)
     local c_b=e.c_b
 
-    local RUN_ACC=Tl.Dim*70*dt
-    local RUN_DEC=Tl.Dim*40*dt
-    local RUN_MAX=Tl.Dim*5
-    local RUN_MIN=Tl.Dim*1
-
     local FALL_ACC=Tl.Dim*30*dt
     local FALL_MAX=Tl.Dim*13
 
@@ -25,49 +20,41 @@ function S_Physic:process(e, dt)
     local vx=c_b.vx
     local vy=c_b.vy
 
-    -- if c_b.state=='ladder' then
-    --     e:off('c_gravity')
-    -- elseif c_b.state=='platform' then
-    --     e:off('c_gravity')
-    -- elseif c_b.state=='corner' then
-    --     e:off('c_gravity')
-    -- end
-
-    -- if c_b.grab_platform_ok then
-    --     e:off('c_gravity')
-    -- else
-    --     e:on('c_gravity')
-
-    --== move
+    --== move horizontaly
     if e:has_active('c_move_hrz') then
+        local c_move=e.c_move_hrz
+
+        --== acceleration
         if pad_r then
-            vx=vx+RUN_ACC
-            if vx > RUN_MAX then vx=RUN_MAX end
+            vx=vx+c_move.acc*dt
+            if vx > c_move.max then vx=c_move.max end
         elseif pad_l then
-            vx=vx-RUN_ACC
-            if vx < -RUN_MAX then vx=-RUN_MAX end
+            vx=vx-c_move.acc*dt
+            if vx < -c_move.max then vx=-c_move.max end
+        end
+
+        --== deceleration
+        if vx > 0 then
+            if pad_l then
+                vx=0
+            elseif not pad_r then
+                vx=vx-c_move.dec*dt
+                if vx<c_move.min then vx=0 end
+            end
+        elseif vx < 0 and not pad_l then
+            if pad_r then
+                vx=0
+            elseif not pad_l then
+                vx=vx+c_move.dec*dt
+                if vx>c_move.min then vx=0 end
+            end
         end
     end
-    --== deceleration
-    if vx > 0 then
-        if pad_l then
-            vx=0
-        elseif not pad_r then
-            vx=vx-RUN_DEC
-            if vx<RUN_MIN then vx=0 end        
-        end
-    elseif vx < 0 and not pad_l then
-        if pad_r then
-            vx=0
-        elseif not pad_l then
-            vx=vx+RUN_DEC
-            if vx>RUN_MIN then vx=0 end
-        end
-    end
+    
     --== jump
     if c_b.on_ground then
         if pad_a then
-            vy=-380
+            vy=-358
         else
             vy=0
         end

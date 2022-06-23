@@ -27,7 +27,8 @@ Bit=require 'bit'
 require 'anim_atlas'
 require 'component'
 require 'component_body'
-require 'component_states'
+require 'component_stances'
+require 'component_actions'
 require 'entity'
 require 'system'
 require 'system_collision'
@@ -39,6 +40,7 @@ require 'system_mario_physic'
 require 'system_controlls'
 require 'system_map_interractions'
 require 'system_animate'
+require 'game_config'
 
 
 GAME=Game()

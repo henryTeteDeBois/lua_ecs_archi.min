@@ -66,9 +66,10 @@ function E_Foo:__construct(x, y, w, h)
 
     self.c_state_machine:set(self.c_hero_wander_st)
 
-    -- self.c_climb_corner_state = C_ClimbCornerState()
-    self.c_hang_platform_state = C_HangPlatformState()
-    -- self.c_climb_ladder_state = C_ClimbLadderState()
+    self.c_climb_corner_act = C_ClimbCornerAct(self)
+    self.c_hang_platform_stance = C_HangPlatformStance(self)
+    self.c_climb_platform_act = C_ClimbPlatformAct(self)
+    -- self.c_climb_ladder_state = C_ClimbLadderStance(self)
 
     self:off('c_move_vert')
 end

@@ -16,24 +16,24 @@ function C_Body:__construct(e, x, y, w, h)
     --== collision
     self.colls = {}
     self.on_ground = false
-    self.on_platform=false
-    self.on_ladder=false
+    -- self.on_platform=false
+    -- self.on_ladder=false
     --== a mettre coté components ?
     self.is_on_ground=false
     
-    self.is_platform_hanging=false
-    self.is_platform_climbing=false
+    -- self.is_platform_hanging=false
+    -- self.is_platform_climbing=false
 
-    self.is_corner_hanging=false    
-    self.is_ladder_climbing=false
+    -- self.is_corner_hanging=false    
+    -- self.is_ladder_climbing=false
     
-    self.can_platform_hang=false
-    self.can_platform_climb=false
+    -- self.can_platform_hang=false
+    -- self.can_platform_climb=false
 
-    self.can_corner_climb=false
+    -- self.can_corner_climb=false
 
-    self.can_ladder_climb_up=false
-    self.can_ladder_climb_down=false
+    -- self.can_ladder_climb_up=false
+    -- self.can_ladder_climb_down=false
     --==
     self.draw_outline=true
     self.draw_outile_color={0,1,0,1}

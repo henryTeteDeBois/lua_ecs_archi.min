@@ -10,7 +10,15 @@ function S_Collision.__filter_colls(e,o)
     if Xtype.is(o, E_Tile) then
         local c_tile = o.c_tile
 
+        if c_tile:has_prop(Tl.Prop.Platform) then
+            return 'cross'
+        end
+
         if c_tile:has_prop(Tl.Prop.Ground) then
+            return 'slide'
+        end
+
+        if c_tile:has_prop(Tl.Prop.Wall) then
             return 'slide'
         end
     end
@@ -31,7 +39,13 @@ function S_Collision:process(e, dt)
     c_b.hit_ceil=nil
     c_b.hit_ground=nil
 
-    c_b.can_grab_platform = nil
+    if e.has_active('c_climb_corner_act') then
+        e.c_climb_corner_act.is_entering_ok = false
+    end
+
+    if e.has_active('c_hang_platform_stance') then
+        e.c_hang_platform_stance.is_entering_ok = false
+    end
 
     --== collisions handling
     for _,coll in ipairs(colls) do
@@ -41,7 +55,41 @@ function S_Collision:process(e, dt)
             local tl=o
             local c_tile=o.c_tile
 
-            
+            --== hang to platform
+            if e.has_active('c_hang_platform_stance') and e.c_hang_platform_stance.can_enter then
+                if c_b.vy > 0 and c_tile:has_prop(Tl.Prop.Platform) then
+                    if goal_y > tl.c_b:top()-2 and goal_y < o.c_b:top()+4 then
+                        e.c_hang_platform_stance.is_entering_ok = true
+                        e.c_hang_platform_stance.platform_coll = coll
+                    end
+                end
+            end
+
+            --== hit corner wall
+            if e.has_active('c_climb_corner_act') and c_b.vy > 0 and coll.normal.x ~= 0 then
+                if GAME.map:is_tl_corner_wall(c_tile.index.x, c_tile.index.y, -coll.normal.x) then
+                    
+                    if goal_y > o.c_b:top()-4 and goal_y < o.c_b:top()+6 then
+                        e.c_climb_corner_act.is_entering_ok = true
+                        e.c_climb_corner_act.corner_coll=coll
+                    end
+                
+                end
+            end
+
+            --== hit ground
+            if coll.normal.y == -1 then
+                if c_tile:has_prop(Tl.Prop.Platform) then
+                    if goal_y+c_b.h < tl.c_b:top()+6 then
+                        c_b.hit_ground=true
+                        goal_y=tl.c_b:top()-c_b.h                        
+                    end
+
+
+                elseif c_tile:has_prop(Tl.Prop.Ground) then
+                    c_b.hit_ground=true
+                end
+            end
         end
     end
 
@@ -55,7 +103,7 @@ function S_Collision:process(e, dt)
        
     --       --print('=>',state.args.platform_coll.other)
     --     end
-    end
+    -- end
 
     --== is still on ground ?
     if c_b.on_ground then
