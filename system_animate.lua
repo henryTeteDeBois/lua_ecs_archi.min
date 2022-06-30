@@ -65,7 +65,7 @@ function S_Animate_Hero_Atlas:process(e, dt)
 
         if state.on_enter then
             
-            if c_b.vx > 0 then
+            if c_b.vx > 0 then -- pourri
                 c_anim.dir = 1
             elseif c_b.vx < 0 then
                 c_anim.dir = -1
@@ -77,6 +77,7 @@ function S_Animate_Hero_Atlas:process(e, dt)
                 c_anim:set('climb_corner', -0.05, 0.95)
             end
         end
+    
     elseif c_sm:is(C_HangPlatformStance) then
         if state.on_enter then
             c_anim:set('platf_move')
@@ -87,19 +88,37 @@ function S_Animate_Hero_Atlas:process(e, dt)
             elseif c_b.vx < 0 then
                 c_anim.dir = -1
             end
-                print( c_b.vx)
             if c_b.vx ~= 0 then
                 c_anim:play()
             else
                 c_anim:pause()
             end
         end
+
     elseif c_sm:is(C_ClimbPlatformAct) then
         if state.on_enter then
             c_anim:set('platf_climb')
         end
+
     elseif c_sm:is(C_HeroWanderSt) then
-        c_anim:set('idle')
+        
+        if c_b.vx > 0 then
+            -- print(c_b.vx)
+            c_anim.dir = 1
+            c_anim:set('run')
+        elseif c_b.vx < 0 then
+            -- print(c_b.vx)
+
+            c_anim.dir = -1
+            c_anim:set('run')
+        else
+            c_anim:set('idle')
+        end
+    
+    elseif c_sm:is(C_DuckStance) then
+        if state.on_enter then
+            c_anim:set('duck')
+        end
     end
 
 end

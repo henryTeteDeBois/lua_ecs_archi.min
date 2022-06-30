@@ -16,15 +16,13 @@ function S_Controlls:process(e, dt)
     local pad_u=love.keyboard.isDown('up')
     local pad_a=love.keyboard.isDown('space')
 
-
-
     if c_sm:is(C_HeroWanderSt) then
         if c_b.on_ground then
             
         else
             --== hang to platform
-            if e.has_active('c_hang_platform_stance') and e.c_hang_platform_stance.is_entering_ok then
-                    c_sm:set(e.c_hang_platform_stance, {coll=e.c_hang_platform_stance.platform_coll})                    
+            if e.has_active('c_hang_platform_stance') and e.c_hang_platform_stance.is_entering_ok and not pad_a then
+                c_sm:set(e.c_hang_platform_stance, {coll=e.c_hang_platform_stance.platform_coll})                    
 
             --== climb corner
             elseif e.has_active('c_climb_corner_act') and e.c_climb_corner_act.is_entering_ok then

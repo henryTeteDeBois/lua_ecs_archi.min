@@ -79,15 +79,17 @@ function S_Collision:process(e, dt)
 
             --== hit ground
             if coll.normal.y == -1 then
-                if c_tile:has_prop(Tl.Prop.Platform) then
-                    if goal_y+c_b.h < tl.c_b:top()+6 then
-                        c_b.hit_ground=true
-                        goal_y=tl.c_b:top()-c_b.h                        
-                    end
 
+                if c_tile:has_prop(Tl.Prop.Platform) then
+                    if goal_y+c_b.h < tl.c_b:top()+6 and not c_b.ignore_platform then
+                        c_b.hit_ground=true
+                        goal_y=tl.c_b:top()-c_b.h
+                        print('hit ground1')
+                    end
 
                 elseif c_tile:has_prop(Tl.Prop.Ground) then
                     c_b.hit_ground=true
+                    print('hit ground2')
                 end
             end
         end
@@ -96,6 +98,7 @@ function S_Collision:process(e, dt)
     -- c_sm = e.c_state_machine
     -- if c_sm then
     --     local state = c_sm:get()
+
     --     if Xtype.is(state, C_HangPlatformState) and state.is_climbing then
     --         local coll = state.args.platform_coll
        
@@ -106,24 +109,69 @@ function S_Collision:process(e, dt)
     -- end
 
     --== is still on ground ?
-    if c_b.on_ground then
+    if c_b.on_ground and not c_b.ignore_platform then
         local query_rect_h=2
+        
         --== ground tile below
         local below, below_len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h, c_b.w, query_rect_h, function(item)
             local c_tile=item.c_tile
             return Xtype.is(item, E_Tile) and c_tile:has_prop(Tl.Prop.Ground)
         end)
         --== empty tile at bottom
-        local bottom, bottom_len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h-query_rect_h, c_b.w, query_rect_h, function(item)
+        local bottom_empty, bottom_empty_len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h-query_rect_h, c_b.w, query_rect_h, function(item)
             local c_tile=item.c_tile
             return Xtype.is(item, E_Tile) and c_tile:has_prop(Tl.Prop.Empty)
         end)
-        c_b.on_ground=below_len>0 and bottom_len>0
+        c_b.on_ground=bottom_empty_len>0 and below_len>0
+        
+        --== is ground platform
+        below, below_len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h, c_b.w, query_rect_h, function(item)
+            local c_tile=item.c_tile
+            return Xtype.is(item, E_Tile) and not c_tile:has_prop(Tl.Prop.Platform) and not c_tile:has_prop(Tl.Prop.Empty)
+        end)
+        c_b.standing_on_platform = below_len==0 and bottom_empty_len>0
+         
+        --== is ground ladder
+        below, below_len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h, c_b.w, query_rect_h, function(item)
+            local c_tile=item.c_tile
+            return Xtype.is(item, E_Tile) and c_tile:has_prop(Tl.Prop.Ladder)
+        end)
+        c_b.standing_on_ladder = below_len>0 and bottom_empty_len>0
+    else
+        c_b.on_ground=false
     end
     --== hit ground = on ground
     if c_b.hit_ground then
         c_b.on_ground=true
     end
+    
+
+    if  c_b.ignore_platform == true then
+        local query_rect_h=2
+        --== empty tile at bottom
+        local below_empty, below_empty_len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h, c_b.w, query_rect_h, function(item)
+            local c_tile=item.c_tile
+            if Xtype.is(item, E_Tile) then
+                -- print(c_tile:has_prop(Tl.Prop.Empty), c_tile.index.x, c_tile.index.y, c_tile.type)
+            end
+            return Xtype.is(item, E_Tile) and not c_tile:has_prop(Tl.Prop.Empty)
+        end)
+
+        local bottom_platf, bottom_platf_len=GAME.bump_world:queryRect(goal_x, goal_y+c_b.h-query_rect_h, c_b.w, query_rect_h, function(item)
+            local c_tile=item.c_tile
+            if Xtype.is(item, E_Tile) then
+                -- print(c_tile:has_prop(Tl.Prop.Empty), c_tile.index.x, c_tile.index.y, c_tile.type)
+            end
+            return Xtype.is(item, E_Tile) and c_tile:has_prop(Tl.Prop.Platform)
+        end)
+
+        print(bottom_platf_len , below_empty_len )
+        if bottom_platf_len > 0 and below_empty_len == 0 then
+            print('c_b.ignore_platform = false')
+            c_b.ignore_platform = false          
+        end
+    end
+    
     --== update actual position
     e.c_b.x=goal_x
     e.c_b.y=goal_y

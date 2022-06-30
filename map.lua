@@ -93,5 +93,5 @@ function Map:is_tl_corner_wall(ix, iy, dir) --== dir=1 or -1
         return false
     end
 
-    return  t.c_tile:has_prop(Tl.Prop.Wall) and t_b.c_tile.props==0 and t_u.c_tile.props==0 and t_bu.c_tile.props==0
+    return  t.c_tile:has_prop(Tl.Prop.Wall) and t_b.c_tile:has_prop(Tl.Prop.Empty) and t_u.c_tile:has_prop(Tl.Prop.Empty) and t_bu.c_tile:has_prop(Tl.Prop.Empty)
 end

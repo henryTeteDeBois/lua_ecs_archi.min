@@ -106,3 +106,15 @@ function C_ClimbLadderStance:__construct(e)
       --==
       self.is_hanging=false
 end
+
+--===================================#
+--
+
+C_DuckStance=Class('C_DuckStance', StateComp)
+
+function C_DuckStance:__construct(e)
+    StateComp.__construct(self, e)
+    --==
+end
+
+

@@ -130,6 +130,9 @@ function C_Anim:__construct(e, atlas)
 end
 
 function C_Anim:set(name, ox, oy)
+    if self.atlas[name] == self.props then
+        return
+    end
     self.props=self.atlas[name]
     self.ox=ox or 0.5
     self.oy=oy or 1

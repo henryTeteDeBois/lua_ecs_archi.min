@@ -69,7 +69,9 @@ function E_Foo:__construct(x, y, w, h)
     self.c_climb_corner_act = C_ClimbCornerAct(self)
     self.c_hang_platform_stance = C_HangPlatformStance(self)
     self.c_climb_platform_act = C_ClimbPlatformAct(self)
-    -- self.c_climb_ladder_state = C_ClimbLadderStance(self)
+    self.c_climb_ladder_stance = C_ClimbLadderStance(self)
+    self.c_duck_stance = C_DuckStance(self)
+    self.c_jump_act = C_JumpAct(self)
 
     self:off('c_move_vert')
 end
@@ -84,6 +86,9 @@ function E_Tile:__construct(ix, iy, type)
     Entity:__construct(self)
     --== tile collision properties
     local props=0
+    if type==Tl.Type.Empty then
+        props=props+Tl.Prop.Empty
+    end
     if type==Tl.Type.Wall or type==Tl.Type.LadW or type==Tl.Type.Platform then
         props=props+Tl.Prop.Ground
     end

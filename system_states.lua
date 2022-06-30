@@ -15,7 +15,7 @@ function S_StateMachineHandler:process(e, dt)
 
     --== only once
     if cur and cur.on_enter then
-        print('on enter=false', cur)
+        -- print('on enter=false', cur)
          cur.on_enter=false 
     end
     -- if cur and cur.on_exit then cur.on_exit=fase end
@@ -38,7 +38,7 @@ function S_StateMachineHandler:process(e, dt)
                 new.on_update=true
                 new.on_exit=false
             end
-            print('new state: ',c_sm.__cur_state,' => ',c_sm.__new_state)
+            -- print('new state: ',c_sm.__cur_state,' => ',c_sm.__new_state)
             c_sm.__cur_state = c_sm.__new_state
         end
     end
@@ -62,14 +62,31 @@ function S_HeroWanderSt:process(e, dt)
         local state=c_sm:get()
 
         if state.on_enter then
-            e:on('c_gravity', 'c_move_hrz')
+            e:on('c_gravity', 'c_move_hrz', 'c_duck')
             e.c_move_hrz:preset(Preset.C_Move_Hrz.C_Wander_Stance)
         end
 
         if state.on_update then
+
+            if c_b.on_ground then
+                e:on('c_jump_act')
+            end
+
+            if not c_b.on_ground then
+                e:off('c_jump_act')
+            end
+            if c_b.on_ground then
+                print('on ground')
+                local pad_d=love.keyboard.isDown('down')
+
+                if pad_d then
+                    c_sm:set(e.c_duck_stance)
+                end
+            end
         end
 
-        if state.on_exit then            
+        if state.on_exit then
+            e:off('c_duck')
         end
     end
 end
@@ -193,6 +210,7 @@ function S_ClimbCornerAct:process(e, dt)
 
         if state.on_enter then
             e:off('c_gravity', 'c_move_hrz')
+            e.c_b.vx=0
             e.c_b.y=e_tl.c_b.y
             GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
         end
@@ -213,6 +231,92 @@ function S_ClimbCornerAct:process(e, dt)
 
             e.c_b.y=e_tl.c_b:top()-e.c_b.h
             GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
+        end
+    end
+end
+
+--===================================#
+--
+
+S_DuckStance=Tiny.processingSystem()
+S_DuckStance.active=false;
+
+function S_DuckStance:filter(e)
+    return e:has_active('c_b', 'c_state_machine', 'c_duck_stance')
+end
+
+function S_DuckStance:process(e, dt)
+    local c_b=e.c_b
+    local c_sm=e.c_state_machine
+
+    if c_sm:is(C_DuckStance) then
+        local state=c_sm:get()
+        local args = state.args
+        -- local e_tl = state.args.coll.other
+
+        if state.on_enter then
+            e:off('c_move_hrz', 'c_jump_act', 'c_gravity')
+            e.c_b.vx=0
+            e.c_b.vy=0
+        end
+
+        if state.on_update then
+            local pad_d=love.keyboard.isDown('down')
+            local pad_a=love.keyboard.isDown('space')
+
+            if not pad_d then
+                c_sm:set(e.c_hero_wander_st)
+            end
+
+            if pad_a and c_b.standing_on_platform then
+                c_b.ignore_platform=true
+                print('c_b.ignore_platform = true')
+
+                c_sm:set(e.c_hero_wander_st)
+            end
+        end
+
+        if state.on_exit then
+            -- e.c_b.y=e_tl.c_b:top()-e.c_b.h
+            -- GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
+        end
+    end
+end
+
+--===================================#
+--
+
+S_ClimbLadderStance=Tiny.processingSystem()
+S_ClimbLadderStance.active=false;
+
+function S_ClimbLadderStance:filter(e)
+    return e:has_active('c_b', 'c_state_machine', 'c_climb_ladder_stance')
+end
+
+function S_ClimbLadderStance:process(e, dt)
+    local c_b=e.c_b
+    local c_sm=e.c_state_machine
+
+    if c_sm:is(C_ClimbLadderStance) then
+        local state=c_sm:get()
+        local args = state.args
+        local coll = args.coll
+        local e_tl = state.args.coll.other
+
+        if state.on_enter then
+            e:off('c_move_hrz')
+            e.c_b.vx=0
+        end
+
+        if state.on_update then
+            -- if e.c_anim.is_over then
+            --     c_sm:set(e.c_hero_wander_st)
+            -- end
+        end
+
+        if state.on_exit then
+            -- e.c_b.y=e_tl.c_b:top()-e.c_b.h
+            -- GAME.bump_world:update(e, c_b:left(), c_b:top(), c_b.w, c_b.h)
         end
     end
 end

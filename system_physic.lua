@@ -41,22 +41,27 @@ function S_Physic:process(e, dt)
                 vx=vx-c_move.dec*dt
                 if vx<c_move.min then vx=0 end
             end
-        elseif vx < 0 and not pad_l then
+        elseif vx < 0 then
             if pad_r then
                 vx=0
             elseif not pad_l then
                 vx=vx+c_move.dec*dt
-                if vx>c_move.min then vx=0 end
+                if vx>-c_move.min then vx=0 end
             end
         end
     end
     
     --== jump
     if c_b.on_ground then
-        if pad_a then
-            vy=-358
-        else
-            vy=0
+
+        if (e:has_active('c_jump_act')) then
+            local c_jmp = e.c_jump_act
+            if pad_a then
+                print('jump')
+                vy=c_jmp.impulse_y
+            else
+                vy=0
+            end
         end
     --== fall/gravity
     elseif e:has_active('c_gravity') then

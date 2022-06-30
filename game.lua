@@ -26,7 +26,9 @@ function Game:load()
         S_Animate_Hero_Atlas,
         S_ClimbCornerAct,
         S_HangPlatformStance,
-        S_ClimbPlatformAct
+        S_ClimbPlatformAct,
+        S_DuckStance,
+        S_ClimbLadderStance
         -- S_Mario_Physic
     )
     self.bump_world=Bump.newWorld(8) -- collisions engine
@@ -47,6 +49,8 @@ function Game:update(dt)
     S_HangPlatformStance:update(dt)
     S_ClimbCornerAct:update(dt)
     S_ClimbPlatformAct:update(dt)
+    S_DuckStance:update(dt)
+    S_ClimbLadderStance:update(dt)
 
     S_StateMachineHandler:update(dt)
     S_Physic:update(dt)
