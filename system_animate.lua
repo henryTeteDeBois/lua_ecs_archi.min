@@ -58,9 +58,9 @@ function S_Animate_Hero_Atlas:process(e, dt)
     local c_sm = e.c_state_machine
 
     local state = c_sm:get()
-    local args = state.args
 
     if c_sm:is(C_ClimbCornerAct) then
+        local args = state.args
         local coll = args.coll
 
         if state.on_enter then

@@ -15,12 +15,12 @@ function Game:load()
         S_DrawBodyOutline,
         S_Collision,
         S_Physic,
-        S_Controlls,
+        -- S_Controlls,
         S_MapInterractions,
-        S_StateMachineHandler,
+        S_StateMachine,
         S_HeroWanderSt,
         S_UpdateBumpPosition,
-        S_StateManager,
+        -- S_StateManager,
         S_PlatformState,
         S_Animate,
         S_Animate_Hero_Atlas,
@@ -45,23 +45,21 @@ function Game:update(dt)
     -- self.e_foo.c_b.x=self.e_foo.c_b.x-50*dt
     self.tiny_world:update()
 
-    S_HeroWanderSt:update(dt)
-    S_HangPlatformStance:update(dt)
-    S_ClimbCornerAct:update(dt)
-    S_ClimbPlatformAct:update(dt)
-    S_DuckStance:update(dt)
-    S_ClimbLadderStance:update(dt)
+    -- S_HeroWanderSt:update(dt)
+    -- S_HangPlatformStance:update(dt)
+    -- S_ClimbCornerAct:update(dt)
+    -- S_ClimbPlatformAct:update(dt)
+    -- S_DuckStance:update(dt)
+    -- S_ClimbLadderStance:update(dt)
 
-    S_StateMachineHandler:update(dt)
+    -- S_StateMachineHandler:update(dt)
     S_Physic:update(dt)
-
-    -- S_Mario_Physic:update(dt)
     S_Collision:update(dt)
     S_UpdateBumpPosition:update(dt)
 
-    S_Controlls:update(dt)
+    -- S_Controlls:update(dt)
     
-    -- S_StateManager:update(dt)
+    S_StateMachine:update(dt)
     -- S_PlatformState:update(dt)
     S_Animate_Hero_Atlas:update(dt)
     -- S_MapInterractions:update(dt)
